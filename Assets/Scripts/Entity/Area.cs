@@ -28,3 +28,23 @@ public class EmptyArea : Area
     {
     }
 }
+
+
+public class GapArea : Area
+{
+    public override void Clear()
+    {
+    }
+
+    public override void Init()
+    {
+    }
+
+    public override void Show()
+    {
+    }
+
+    public override void Trigger()
+    {
+    }
+}

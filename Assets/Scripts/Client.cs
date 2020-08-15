@@ -40,6 +40,7 @@ public class Client : MonobehaviourExtension
                 return;
             CardSystem.Instance.UseCard(currentCard, index);
             State = InnerState.Move;
+            CheckEntity();
         }
     }
 
@@ -51,11 +52,16 @@ public class Client : MonobehaviourExtension
             {
                 EntitySystem.Instance.Move(entityList[id], index);
             }
+            CheckEntity();
+        }
+    }
 
-            if (entityList.TrueForAll((a) => a.IsFinishMove))
-            {
-                GameManager.Instance.MoveEnd();
-            }
+    private void CheckEntity()
+    {
+        if (entityList.TrueForAll((a) => a.IsFinishMove))
+        {
+            State = InnerState.Empty;
+            GameManager.Instance.MoveEnd();
         }
     }
 }
