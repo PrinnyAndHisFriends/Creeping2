@@ -7,6 +7,7 @@ public class CardSystem : MonoSingleton<CardSystem>
 {
     Queue<Card> cardQueue = new Queue<Card>();
     public event Action<Card> OnShowCardEvent;
+    public Card currentCard;
 
     void Awake()
     {
@@ -15,6 +16,7 @@ public class CardSystem : MonoSingleton<CardSystem>
         {
             cardQueue.Enqueue(new EmptyCard());
         }
+        currentCard = new EmptyCard();
     }
 
     // Update is called once per frame
@@ -27,6 +29,7 @@ public class CardSystem : MonoSingleton<CardSystem>
     {
         var c = cardQueue.Dequeue();
         OnShowCardEvent?.Invoke(c);
+        currentCard = c;
         return c;
     }
 

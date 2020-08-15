@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UICard : MonoBehaviour
 {
-    Card currentCard;
-
+    UIDragHandler dh;
+    private void Awake()
+    {
+        dh = gameObject.AddComponent<UIDragHandler>();
+        dh.OnDragEnd += OnDragEnd;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +25,13 @@ public class UICard : MonoBehaviour
 
     public void RotateCard()
     {
-        currentCard.Rotate();
+        var c = CardSystem.Instance.currentCard;
+        c.Rotate();
+        GetComponent<Image>().sprite = c.GetSprite();
+    }
+
+    public void OnDragEnd()
+    {
+        GameManager.Instance.CurrentPlayer.UseCard();
     }
 }

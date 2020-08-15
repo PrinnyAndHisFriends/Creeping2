@@ -2,36 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Area : MonoBehaviour
+public abstract class Area 
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public abstract void Trigger();
+    public abstract void Clear();
+    public abstract void Show();
+    public abstract void Init();
+}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void Trigger()
+public class EmptyArea : Area
+{
+    public override void Clear()
     {
     }
 
-    public void Clear()
+    public override void Init()
     {
-
     }
 
-    public void Show()
+    public override void Show()
     {
-
     }
 
-    public void Init()
+    public override void Trigger()
     {
-
     }
 }

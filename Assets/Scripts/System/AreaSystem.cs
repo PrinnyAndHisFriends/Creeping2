@@ -13,7 +13,15 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     // Start is called before the first frame update
     void Awake()
     {
-        //#TODO Init areas
+        //Init
+        for (int i = Setting.MIN_AREA; i <= Setting.MAX_AREA; i++)
+        {
+            for (int j = Setting.MIN_AREA; j < Setting.MAX_AREA; j++)
+            {
+                Vector3Int key = new Vector3Int(i ,j ,0);
+                areas[key] = new EmptyArea();
+            }
+        }
     }
 
     // Update is called once per frame
@@ -23,7 +31,8 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         index = tilemap.WorldToCell(ray.GetPoint(-ray.origin.z / ray.direction.z));
         if (tilemap.HasTile(index))
         {
-            Log("Highlight");
+            //Log("Highlight");
+            //Log(index.ToString());
         }
     }
 
