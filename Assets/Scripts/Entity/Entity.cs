@@ -23,6 +23,17 @@ public class Entity : MonoBehaviour
         
     }
 
+    public void AttackedBy(Entity entity)
+    {
+
+    }
+
+
+    public void Init()
+    {
+
+    }
+
     public void Dead()
     {
 

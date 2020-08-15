@@ -11,6 +11,10 @@ public class CardSystem : MonoSingleton<CardSystem>
     void Awake()
     {
         //Init
+        for (int i = 0; i < 5; i++)
+        {
+            cardQueue.Enqueue(new EmptyCard());
+        }
     }
 
     // Update is called once per frame
@@ -29,5 +33,10 @@ public class CardSystem : MonoSingleton<CardSystem>
     public void UseCard(Card card, Vector3Int index)
     {
         AreaSystem.Instance.SetArea(index, card.ToArea());
+    }
+
+    public bool IsDeckEmpty()
+    {
+        return cardQueue.Count == 0;
     }
 }

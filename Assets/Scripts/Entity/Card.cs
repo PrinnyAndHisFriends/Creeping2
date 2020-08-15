@@ -2,26 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Card : MonoBehaviour
+public abstract class Card
 {
-    // Start is called before the first frame update
-    void Start()
+    public abstract void Rotate();
+    public abstract Area ToArea();
+}
+
+public class EmptyCard : Card
+{
+    public override void Rotate()
     {
-        
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void Rotate()
-    {
-
-    }
-
-    public Area ToArea()
+    public override Area ToArea()
     {
         return null;
     }

@@ -5,57 +5,43 @@ using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    TurnType cp;
+    TurnType cp = TurnType.One;
 
-    public TurnType CurrentPlayer {
+    public TurnType CurrentTurn {
         get {
             return cp;
         }
         set {
-            OnTurnEnd?.Invoke();
-            cp = value;
-            OnTurnStart?.Invoke();
-
-            //OnTurnEnd();
-            //switch (cp)
-            //{
-            //    case TurnType.Empty:
-            //        break;
-            //    case TurnType.One:
-            //        break;
-            //    case TurnType.Two:
-            //        break;
-            //    default:
-            //        break;
-            //}
-            //cp = value;
-
-            //OnTurnStart();
-            //switch (cp)
-            //{
-            //    case TurnType.Empty:
-            //        break;
-            //    case TurnType.One:
-            //        break;
-            //    case TurnType.Two:
-            //        break;
-            //    default:
-            //        break;
-            //}
+            OnTurnEnd();
+            if (!IsGameEnd())
+            {
+                cp = value;
+                OnTurnStart();
+            }
+            else
+            {
+                cp = TurnType.Empty;
+                OnGameEnd();
+            }
         }
     }
+    public List<Client> players;
+    public Client CurrentPlayer { get; set; }
 
-    public event Action OnTurnStart;
-    public event Action OnTurnEnd;
+    public event Action OnTurnStartEvent;
+    public event Action OnTurnEndEvent;
+    public event Action OnGameStartEvent;
+    public event Action OnGameEndEvent;
 
     private void Awake()
     {
-        CurrentPlayer = TurnType.One;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        OnGameStart();
+        OnTurnStart();
     }
 
     // Update is called once per frame
@@ -64,12 +50,36 @@ public class GameManager : MonoSingleton<GameManager>
         
     }
 
-    public void Change()
+    void OnGameStart()
     {
-        if (CurrentPlayer == TurnType.One)
-            CurrentPlayer = TurnType.Two;
-        else if (CurrentPlayer == TurnType.Two)
-            CurrentPlayer = TurnType.One;
+        Log("OnGameStart");
+        OnGameStartEvent?.Invoke();
+    }
+    void OnGameEnd()
+    {
+        Log("OnGameEnd");
+        OnGameEndEvent?.Invoke();
+    }
+    void OnTurnStart()
+    {
+        Log("OnTurnStart");
+        CurrentPlayer = players.Find((a) => a.activeType == CurrentTurn);
+        OnTurnStartEvent?.Invoke();
+        CurrentPlayer.OnTurnStart();
+    }
+    void OnTurnEnd()
+    {
+        Log("OnTurnEnd");
+        CurrentPlayer.OnTurnEnd();
+        OnTurnEndEvent?.Invoke();
+    }
+
+    void Change()
+    {
+        if (CurrentTurn == TurnType.One)
+            CurrentTurn = TurnType.Two;
+        else if (CurrentTurn == TurnType.Two)
+            CurrentTurn = TurnType.One;
     }
 
     public void MoveEnd()
@@ -77,8 +87,14 @@ public class GameManager : MonoSingleton<GameManager>
         Change();
     }
 
-    public static bool IsPlayer(TurnType player)
+    bool IsGameEnd()
     {
-        return Instance.CurrentPlayer == player;
+        bool ret = false;
+        ret |= CardSystem.Instance.IsDeckEmpty();
+        return ret;
+    }
+    public bool IsPlayer(TurnType player)
+    {
+        return CurrentTurn == player;
     }
 }
