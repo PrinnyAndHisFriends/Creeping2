@@ -23,17 +23,12 @@ public class UICard : MonoBehaviour
         
     }
 
-    string lastTexturePath;
     public void RotateCard()
     {
         var c = CardSystem.Instance.currentCard;
         c.Rotate();
-        string path = c.GetTexturePath();
-        if (lastTexturePath != path)
-        {
-            GetComponent<Image>().sprite =
-                ResourceInterface.LoadSprite(path);
-        }
+        Sprite card = c.GetTile().sprite;
+        GetComponent<Image>().sprite = card;
     }
 
     public void OnDragEnd()
