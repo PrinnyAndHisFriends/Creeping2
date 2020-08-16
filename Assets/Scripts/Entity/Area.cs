@@ -13,7 +13,7 @@ public abstract class Area
         this.back = TileManager.Instance.back;
     }
 
-    public abstract void Trigger();
+    public abstract void Trigger(Vector3Int index);
     public abstract void Clear();
     public virtual void ShowForward(Tilemap map, Vector3Int index)
     {
@@ -33,7 +33,7 @@ public class EmptyArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -47,8 +47,9 @@ public class AntArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
+        EntitySystem.Instance.GenerateEntity(Setting.EntityType.Ant, index);
     }
 }
 public class RotateArea : Area
@@ -59,7 +60,7 @@ public class RotateArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -71,7 +72,7 @@ public class ExchangeArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -83,7 +84,7 @@ public class PresentArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -95,7 +96,7 @@ public class HouseArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -107,7 +108,7 @@ public class EpresentArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -119,7 +120,7 @@ public class GrassArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -132,7 +133,7 @@ public class GapArea : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -144,7 +145,7 @@ public class Way1_2Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -156,7 +157,7 @@ public class Way1_3Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -168,7 +169,7 @@ public class Way1_4Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -180,7 +181,7 @@ public class Way1_2_4Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -192,7 +193,7 @@ public class Way1_3_4Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 
@@ -203,7 +204,7 @@ public class Way1_3_4Area : Area
         {
         }
 
-        public override void Trigger()
+        public override void Trigger(Vector3Int index)
         {
         }
     }
@@ -216,7 +217,7 @@ public class Way1_3_5Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -228,7 +229,7 @@ public class Way1_3_4_6Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }
@@ -240,7 +241,7 @@ public class Way1_2_3_4_5_6Area : Area
     {
     }
 
-    public override void Trigger()
+    public override void Trigger(Vector3Int index)
     {
     }
 }

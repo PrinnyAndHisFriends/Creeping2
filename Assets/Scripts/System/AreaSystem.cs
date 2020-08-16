@@ -119,7 +119,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
             var old = areas[index];
             old.ShowForward(tilemap, index);
             this.OnFinishEvent += OnFinish;
-            old.Trigger();
+            old.Trigger(index);
             StartCoroutine(TriggerFinish());
         }
     }
