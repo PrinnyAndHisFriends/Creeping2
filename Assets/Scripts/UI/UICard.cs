@@ -42,4 +42,9 @@ public class UICard : MonoBehaviour
     {
         GameManager.Instance.CurrentPlayer.UseCard();
     }
+
+    public void CardRemain()
+    {
+
+    }
 }
