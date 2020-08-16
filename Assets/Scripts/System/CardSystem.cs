@@ -70,7 +70,7 @@ public class CardSystem : MonoSingleton<CardSystem>
 
     public int CountRemainedCard()
     {
-        Debug.Log("totle:" + Setting.CARD_DECK_COUNT + "remained:" + cardQueue.Count);
+        
         return cardQueue.Count;
     }
     

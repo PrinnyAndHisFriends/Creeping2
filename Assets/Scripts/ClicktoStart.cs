@@ -6,16 +6,16 @@ using UnityEngine.SceneManagement;
 
 public class ClicktoStart : MonoBehaviour
 {
-
     // Use this for initialization
     void Start()
     {
-        this.GetComponent<Button>().onClick.AddListener(OnClick);
+        //Button btnMount = this.GetComponent<Button>();
+        //btnMount.onClick.AddListener(OnClick);
     }
 
-    void OnClick()
+    public void OnClick()
     {
-        SceneManager.LoadScene("SampleScene");//level1为我们要切换到的场景
+        SceneManager.LoadScene("SampleScene");
     }
 
     // Update is called once per frame
