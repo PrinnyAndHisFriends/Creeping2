@@ -5,46 +5,7 @@ using UnityEngine;
 public class Client : MonobehaviourExtension
 {
     private enum InnerState { Empty, Card, Trigger, Move }
-
-    private InnerState state  = InnerState.Empty;
-    private InnerState State
-    {
-        get
-        {
-            return state;
-        }
-        set
-        {
-            switch (state)
-            {
-                case InnerState.Empty:
-                    break;
-                case InnerState.Card:
-                    break;
-                case InnerState.Trigger:
-                    break;
-                case InnerState.Move:
-                    break;
-                default:
-                    break;
-            }
-            state = value;
-            switch (state)
-            {
-                case InnerState.Empty:
-                    break;
-                case InnerState.Card:
-                    break;
-                case InnerState.Trigger:
-                    break;
-                case InnerState.Move:
-                    CheckEntity();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+    private InnerState State { get; set; } = InnerState.Empty;
 
     public bool IsCardMode { get => State== InnerState.Card; }
     public bool IsMoveMode { get => State== InnerState.Move; }
@@ -73,15 +34,17 @@ public class Client : MonobehaviourExtension
         if (enabled)
         {
             currentCard = CardSystem.Instance.ShowCard();
-            entityList.ForEach((a) => a.TurnInit());
+            entityList.ForEach((a) => a.TurnStart());
             State = InnerState.Card;
-            Log(activeType.ToString());
+            Log("OnTurnStart");
         }
     }
 
     public void OnTurnEnd()
     {
         enabled = false;
+        entityList.ForEach((a) => a.TurnEnd());
+        Log("OnTurnEnd");
     }
 
 
@@ -108,6 +71,8 @@ public class Client : MonobehaviourExtension
     {
         if (State == InnerState.Move)
         {
+            if (oriIndex == targetIndex)
+                return;
             var targetPos = AreaSystem.Instance.GetWorldPosition(targetIndex);
             if (AreaSystem.Instance.CanMove(oriIndex, targetIndex))
             {
@@ -134,9 +99,6 @@ public class Client : MonobehaviourExtension
 
     public void CheckEntity()
     {
-        //Debug.Log(entityList.Count);
-        //Debug.Log(entityList[0].GetType());
-        //Debug.Log(entityList[1].GetType());
         if (entityList.TrueForAll((a) => a.IsFinishMove))
         {
             State = InnerState.Empty;

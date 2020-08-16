@@ -5,43 +5,10 @@ using UnityEngine;
 public abstract class Entity : MonobehaviourExtension
 {
     public enum InnerState { Idle, Moved, Dead }
-    InnerState state = InnerState.Idle;
-    public InnerState State
-    {
-        get
-        {
-            return state;
-        }
-        set
-        {
-            switch (state)
-            {
-                case InnerState.Idle:
-                    break;
-                case InnerState.Moved:
-                    break;
-                case InnerState.Dead:
-                    break;
-                default:
-                    break;
-            }
-            state = value;
-            switch (state)
-            {
-                case InnerState.Idle:
-                    break;
-                case InnerState.Moved:
-                    break;
-                case InnerState.Dead:
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+
+    public InnerState State { get; set; } = InnerState.Idle;
 
     public bool IsFinishMove { get => State == InnerState.Moved; }
-    public bool IsDead { get => State == InnerState.Dead; }
 
     public Vector3Int Index { get; set; }
     public Client player;
@@ -67,14 +34,13 @@ public abstract class Entity : MonobehaviourExtension
 
     public abstract bool CanWin(Entity entity);
 
-    public void Dead()
+    public virtual void Dead()
     {
-        Log("Dead");
         EntitySystem.Instance.DestroyEntity(this);
-        Destroy(gameObject);
+        StartCoroutine(WaittingForDestroy());
     }
 
-    public void Init(Vector3Int index, Client player)
+    public virtual void Init(Vector3Int index, Client player)
     {
         Index = index;
         this.player = player;
@@ -87,7 +53,12 @@ public abstract class Entity : MonobehaviourExtension
         SetPosition(targetPos);
     }
 
-    public void TurnInit()
+    public virtual void TurnStart()
+    {
+        State = InnerState.Idle;
+    }
+
+    public virtual void TurnEnd()
     {
         State = InnerState.Idle;
     }
@@ -95,5 +66,17 @@ public abstract class Entity : MonobehaviourExtension
     void SetPosition(Vector3 pos)
     {
         transform.position = pos + Vector3.up * 0.5f;
+    }
+
+    bool doDestroy = false;
+    IEnumerator WaittingForDestroy()
+    {
+        yield return new WaitUntil(()=>doDestroy);
+        Destroy(gameObject);
+    }
+    
+    void DoDestroy()
+    {
+        doDestroy = true;
     }
 }
