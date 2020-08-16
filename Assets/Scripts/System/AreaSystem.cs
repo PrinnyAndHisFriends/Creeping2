@@ -126,7 +126,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
 
     public IEnumerator TriggerFinish()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         OnFinishEvent?.Invoke();
         OnFinishEvent = null;
     }
