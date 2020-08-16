@@ -4,9 +4,47 @@ using UnityEngine;
 
 public class Client : MonobehaviourExtension
 {
-    private enum InnerState { Empty, Card, Move }
+    private enum InnerState { Empty, Card, Trigger, Move }
 
-    private InnerState State { get; set; } = InnerState.Empty;
+    private InnerState state  = InnerState.Empty;
+    private InnerState State
+    {
+        get
+        {
+            return state;
+        }
+        set
+        {
+            switch (state)
+            {
+                case InnerState.Empty:
+                    break;
+                case InnerState.Card:
+                    break;
+                case InnerState.Trigger:
+                    break;
+                case InnerState.Move:
+                    break;
+                default:
+                    break;
+            }
+            state = value;
+            switch (state)
+            {
+                case InnerState.Empty:
+                    break;
+                case InnerState.Card:
+                    break;
+                case InnerState.Trigger:
+                    break;
+                case InnerState.Move:
+                    CheckEntity();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     public bool IsCardMode { get => State== InnerState.Card; }
     public bool IsMoveMode { get => State== InnerState.Move; }
@@ -54,11 +92,35 @@ public class Client : MonobehaviourExtension
             Vector3Int index;
             if (!AreaSystem.Instance.GetTile(out index))
                 return;
-            CardSystem.Instance.UseCard(currentCard, index);
-            State = InnerState.Move;
-            CheckEntity();
+            if (CardSystem.Instance.UseCard(currentCard, index))
+            {
+                State = InnerState.Trigger;
+                AreaSystem.Instance.TriggerArea(index,
+                    () => {
+                        AreaSystem.Instance.SetArea(index, currentCard.ToArea());
+                        State = InnerState.Move;
+                    });
+            }
         }
     }
+
+    public void Move(Entity entity, Vector3Int oriIndex, Vector3Int targetIndex)
+    {
+        if (State == InnerState.Move)
+        {
+            var targetPos = AreaSystem.Instance.GetWorldPosition(targetIndex);
+            if (AreaSystem.Instance.CanMove(oriIndex, targetIndex))
+            {
+                entity.MoveTo(targetPos);
+                EntitySystem.Instance.Attack(entity, targetIndex);
+                AreaSystem.Instance.TriggerArea(targetIndex, ()=> {
+                    EntitySystem.Instance.Attack(entity, targetIndex);
+                    CheckEntity();
+                });
+            }
+        }
+    }
+
 
     public void AddEntity(Entity entity)
     {

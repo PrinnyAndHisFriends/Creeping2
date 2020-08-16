@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -109,14 +110,32 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         }
     }
 
+    Action OnFinishEvent;
+    public void TriggerArea(Vector3Int index, Action OnFinish)
+    {
+        if (tilemap.HasTile(index))
+        {
+            Log("TriggerArea");
+            var old = areas[index];
+            old.ShowForward(tilemap, index);
+            this.OnFinishEvent += OnFinish;
+            old.Trigger();
+            StartCoroutine(TriggerFinish());
+        }
+    }
+
+    public IEnumerator TriggerFinish()
+    {
+        yield return new WaitForSeconds(5);
+        OnFinishEvent?.Invoke();
+        OnFinishEvent = null;
+    }
+
     public void SetArea(Vector3Int index, Area area)
     {
         if (tilemap.HasTile(index))
         {
             Log("SetArea");
-            var old = areas[index];
-            old.Trigger();
-            old.Clear();
             areas[index] = area;
             area.ShowForward(tilemap, index);
         }

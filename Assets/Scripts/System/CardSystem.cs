@@ -58,9 +58,9 @@ public class CardSystem : MonoSingleton<CardSystem>
         return c;
     }
 
-    public void UseCard(Card card, Vector3Int index)
+    public bool UseCard(Card card, Vector3Int index)
     {
-        AreaSystem.Instance.SetArea(index, card.ToArea());
+        return true;
     }
 
     public bool IsDeckEmpty()

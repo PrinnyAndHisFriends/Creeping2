@@ -61,17 +61,9 @@ public abstract class Entity : MonobehaviourExtension
         {
             var worldPos = AreaSystem.Instance.mousePosInWorld;
             var targetIndex = AreaSystem.Instance.GetIndex(worldPos);
-            var targetPos = AreaSystem.Instance.GetWorldPosition(targetIndex);
-            if (AreaSystem.Instance.CanMove(Index, targetIndex))
-            {
-                SetPosition(targetPos);
-                State = InnerState.Moved;
-                EntitySystem.Instance.Attack(this, targetIndex);
-                player.CheckEntity();
-            }
+            player.Move(this, Index, targetIndex);
         }
     }
-
 
     public abstract bool CanWin(Entity entity);
 
@@ -87,6 +79,12 @@ public abstract class Entity : MonobehaviourExtension
         Index = index;
         this.player = player;
         SetPosition(AreaSystem.Instance.GetWorldPosition(index));
+    }
+
+    public void MoveTo(Vector3 targetPos)
+    {
+        State = InnerState.Moved;
+        SetPosition(targetPos);
     }
 
     public void TurnInit()
