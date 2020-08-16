@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class Ant : Entity
 {
-    public override void AttackedBy(Entity entity)
+    public override bool CanWin(Entity entity)
     {
         if (entity is Girl)
             Dead();
+        else if (entity is House)
+            Dead();
+        return false;
     }
 }

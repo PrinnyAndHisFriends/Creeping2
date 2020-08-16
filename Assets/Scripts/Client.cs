@@ -8,6 +8,9 @@ public class Client : MonobehaviourExtension
 
     private InnerState State { get; set; } = InnerState.Empty;
 
+    public bool IsCardMode { get => State== InnerState.Card; }
+    public bool IsMoveMode { get => State== InnerState.Move; }
+
     public PlayerType activeType;
     List<Entity> entityList = new List<Entity>();
     Card currentCard;
@@ -67,20 +70,11 @@ public class Client : MonobehaviourExtension
         entityList.Remove(entity);
     }
 
-    public void MoveEntity(int id, Vector3Int index)
+    public void CheckEntity()
     {
-        if (State == InnerState.Move)
-        {
-            if (AreaSystem.Instance.CanMove(entityList[id].Index, index))
-            {
-                EntitySystem.Instance.Move(entityList[id], index);
-            }
-            CheckEntity();
-        }
-    }
-
-    private void CheckEntity()
-    {
+        //Debug.Log(entityList.Count);
+        //Debug.Log(entityList[0].GetType());
+        //Debug.Log(entityList[1].GetType());
         if (entityList.TrueForAll((a) => a.IsFinishMove))
         {
             State = InnerState.Empty;

@@ -78,6 +78,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void MoveEndAndChangeTurn()
     {
+        Log("MoveEndAndChangeTurn");
         if (CurrentTurn == PlayerType.PlayerOne)
             CurrentTurn = PlayerType.Two;
         else if (CurrentTurn == PlayerType.Two)

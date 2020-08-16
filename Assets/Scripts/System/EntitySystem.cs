@@ -35,39 +35,39 @@ public class EntitySystem : MonoSingleton<EntitySystem>
                 break;
             case Setting.EntityType.House:
                 entity = Instantiate(house).GetComponent<Entity>();
-                player = GameManager.Instance.PlayerOne;
                 break;
             default:
                 break;
         }
-        player.AddEntity(entity);
         entitys[index] = entity;
-        entity.Init(index, player);
+        if (player)
+        {
+            player.AddEntity(entity);
+            entity.Init(index, player);
+        }
     }
 
     public void DestroyEntity(Entity entity)
     {
         entity.player.RemoveEntity(entity);
-        entitys[entity.Index] = null;
-        entity.Dead();
+        entitys.Remove(entity.Index);
     }
 
-    public void Move(Entity entity, Vector3Int index)
+    public void Attack(Entity entity, Vector3Int index)
     {
-        Log("Move");
-        PlayMoveAnimation();
-        MovePost(entity, index);
-    }
-
-    private void MovePost(Entity entity, Vector3Int index)
-    {
+        Log("Attack");
+        if (entity.Index == index)
+            return;
         var oldIndex = entity.Index;
-        entitys[oldIndex] = null;
+        entitys.Remove(oldIndex);
         entity.Index = index;
         if (entitys.ContainsKey(index))
         {
-            entitys[index].AttackedBy(entity);
-            entity.AttackedBy(entitys[index]);
+            var entity2 = entitys[index];
+            if (entity2.CanWin(entity))
+                entitys[index] = entity2;
+            if (entity.CanWin(entity2))
+                entitys[index] = entity;
         }
     }
 

@@ -52,6 +52,8 @@ MonoBehaviour:
   players:
   - {fileID: 1015896004976378518}
   - {fileID: 1015896004828461804}
+  PlayerOne: {fileID: 1015896004976378518}
+  PlayerTwo: {fileID: 1015896004828461804}
 --- !u!114 &1015896004255726750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,6 +66,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf09b30de3e090d4cad70f5b115b3e5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  girl: {fileID: 3273517403788956261, guid: 896ae86bbe1734641b1febaa8ee2d454, type: 3}
+  ant: {fileID: 1565912839458695787, guid: dd923abb158c30d41acf94fcc99023b6, type: 3}
+  house: {fileID: 9107359391505644876, guid: 281d0389758930a47a280abcc32dff40, type: 3}
 --- !u!114 &1015896004255726749
 MonoBehaviour:
   m_ObjectHideFlags: 0

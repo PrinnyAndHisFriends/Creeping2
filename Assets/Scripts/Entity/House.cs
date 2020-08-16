@@ -5,7 +5,7 @@ using UnityEngine;
 public class House : Entity
 {
     public int life = Setting.LIFE;
-    public override void AttackedBy(Entity entity)
+    public override bool CanWin(Entity entity)
     {
         if (entity is Ant)
         {
@@ -13,5 +13,6 @@ public class House : Entity
             if (life == 0)
                 GameManager.Instance.EndGame();
         }
+        return true;
     }
 }

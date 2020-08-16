@@ -8,6 +8,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
 {
     public Tilemap tilemap;
     Vector3Int index;
+    public Vector3 mousePosInWorld;
 
     List<Area> areaList = new List<Area>();
     Dictionary<Vector3Int, Area> areas = new Dictionary<Vector3Int, Area>();
@@ -33,11 +34,26 @@ public class AreaSystem : MonoSingleton<AreaSystem>
             for (int j = Setting.MIN_AREA; j <= Setting.MAX_AREA; j++)
             {
                 Vector3Int key = new Vector3Int(i ,j ,0);
-                if (i==0 && j==0)
+                if (key == Setting.houseStartIndex)
                 {
                     areas[key] = new HouseArea();
+                    areas[key].ShowForward(tilemap, key);
                     continue;
                 }
+                else if (key == Setting.girlStartIndex)
+                {
+                    areas[key] = new Way1_2_3_4_5_6Area(TileManager.Instance.way1_2_3_4_5_6);
+                    areas[key].ShowForward(tilemap, key);
+                    continue;
+                }
+                else if (key == Setting.antStartIndex)
+                {
+                    areas[key] = new GrassArea();
+                    areas[key].ShowForward(tilemap, key);
+                    continue;
+                }
+
+
                 if (tilemap.HasTile(key))
                 {
                     int id = UnityEngine.Random.Range(0, areaList.Count);
@@ -56,7 +72,8 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     void Update()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        index = tilemap.WorldToCell(ray.GetPoint(-ray.origin.z / ray.direction.z));
+        mousePosInWorld = ray.GetPoint(-ray.origin.z / ray.direction.z);
+        index = tilemap.WorldToCell(mousePosInWorld);
         if (tilemap.HasTile(index))
         {
             //Log("Highlight");
@@ -113,5 +130,10 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     public Vector3 GetWorldPosition(Vector3Int index)
     {
         return tilemap.GetCellCenterWorld(index);
+    }
+
+    public Vector3Int GetIndex(Vector3 worldPos)
+    {
+        return tilemap.WorldToCell(worldPos);
     }
 }
