@@ -10,7 +10,6 @@ public class CardSystem : MonoSingleton<CardSystem>
     public event Action<Card> OnShowCardEvent;
     public Card currentCard;
 
-
     void Awake()
     {
         for (int i = 0; i < Setting.cardCount[Setting.CardType.Gap]; i++)

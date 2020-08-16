@@ -55,6 +55,8 @@ public class UIDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler,
             offset = imgRect.anchoredPosition - mouseUguiPos;
             if (OnDragStart!=null)
                 OnDragStart();
+
+            img.color = new Color(1, 1, 1, 0.5f);
         }
         isDraging = true;
     }
@@ -89,6 +91,8 @@ public class UIDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler,
         offset = Vector2.zero;
         isDraging = false;
         transform.position = oldPosition;
+
+        img.color = new Color(1, 1, 1, 1);
         //Debug.LogError("OnEndDrag");
     }
 

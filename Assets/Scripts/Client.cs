@@ -8,9 +8,25 @@ public class Client : MonobehaviourExtension
 
     private InnerState State { get; set; } = InnerState.Empty;
 
-    public TurnType activeType;
+    public bool IsCardMode { get => State== InnerState.Card; }
+    public bool IsMoveMode { get => State== InnerState.Move; }
+
+    public PlayerType activeType;
     List<Entity> entityList = new List<Entity>();
     Card currentCard;
+
+    private void Start()
+    {
+        if (activeType == PlayerType.PlayerOne)
+        {
+            EntitySystem.Instance.GenerateEntity(Setting.EntityType.Girl, Setting.girlStartIndex);
+            EntitySystem.Instance.GenerateEntity(Setting.EntityType.House, Setting.houseStartIndex);
+        }
+        else
+        {
+            EntitySystem.Instance.GenerateEntity(Setting.EntityType.Ant, Setting.antStartIndex);
+        }
+    }
 
 
     public void OnTurnStart()
@@ -19,7 +35,7 @@ public class Client : MonobehaviourExtension
         if (enabled)
         {
             currentCard = CardSystem.Instance.ShowCard();
-            entityList.ForEach((a) => a.IsFinishMove = false);
+            entityList.ForEach((a) => a.TurnInit());
             State = InnerState.Card;
             Log(activeType.ToString());
         }
@@ -44,24 +60,25 @@ public class Client : MonobehaviourExtension
         }
     }
 
-    public void MoveEntity(int id, Vector3Int index)
+    public void AddEntity(Entity entity)
     {
-        if (State == InnerState.Move)
-        {
-            if (AreaSystem.Instance.CanMove(entityList[id].CurrentAreaIndex, index))
-            {
-                EntitySystem.Instance.Move(entityList[id], index);
-            }
-            CheckEntity();
-        }
+        entityList.Add(entity);
     }
 
-    private void CheckEntity()
+    public void RemoveEntity(Entity entity)
     {
+        entityList.Remove(entity);
+    }
+
+    public void CheckEntity()
+    {
+        //Debug.Log(entityList.Count);
+        //Debug.Log(entityList[0].GetType());
+        //Debug.Log(entityList[1].GetType());
         if (entityList.TrueForAll((a) => a.IsFinishMove))
         {
             State = InnerState.Empty;
-            GameManager.Instance.MoveEnd();
+            GameManager.Instance.MoveEndAndChangeTurn();
         }
     }
 }
