@@ -5,11 +5,14 @@ using UnityEngine.UI;
 
 public class UICard : MonoBehaviour
 {
+    Image img;
     UIDragHandler dh;
     private void Awake()
     {
+        img = GetComponent<Image>();
         dh = gameObject.AddComponent<UIDragHandler>();
         dh.OnDragEnd += OnDragEnd;
+        CardSystem.Instance.OnShowCardEvent += ShowCard;
     }
     // Start is called before the first frame update
     void Start()
@@ -27,8 +30,12 @@ public class UICard : MonoBehaviour
     {
         var c = CardSystem.Instance.currentCard;
         c.Rotate();
-        Sprite card = c.GetTile().sprite;
-        GetComponent<Image>().sprite = card;
+        ShowCard(c);
+    }
+
+    public void ShowCard(Card card)
+    {
+        img.sprite = card.GetTile().sprite;
     }
 
     public void OnDragEnd()

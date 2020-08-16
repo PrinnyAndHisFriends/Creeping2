@@ -10,7 +10,7 @@ public static class Setting
     public static int MAX_AREA = 6;
 
     public static int AREA_DECK_COUNT = 126;
-    public static int DECK_COUNT = 127;
+    public static int CARD_DECK_COUNT = 127;
 
     public enum CardType
     {
@@ -19,23 +19,21 @@ public static class Setting
     }
     public enum AreaType
     {
-        House, Ant, Rotate, Exchange, Present, Empty,
+        House, Ant, Rotate, Exchange, Present, Grass,
         Gap, Way1_2, Way1_3, Way1_4, Way1_2_4,
         Way1_3_4, Way1_3_5, Way1_3_4_6, Way1_2_3_4_5_6,
     }
 
     public static Dictionary<CardType, int> cardCount = new Dictionary<CardType, int> {
-        { CardType.Gap, 126 },
-
-        //{ CardType.Gap, 6 },
-        //{ CardType.Way1_2, 18 },
-        //{ CardType.Way1_3, 18 },
-        //{ CardType.Way1_4, 48 },
-        //{ CardType.Way1_2_4, 6 },
-        //{ CardType.Way1_3_4, 6 },
-        //{ CardType.Way1_3_5, 6 },
-        //{ CardType.Way1_3_4_6, 12 },
-        //{ CardType.Way1_2_3_4_5_6, 6 },
+        { CardType.Gap, 6 },
+        { CardType.Way1_2, 18 },
+        { CardType.Way1_3, 18 },
+        { CardType.Way1_4, 48 },
+        { CardType.Way1_2_4, 6 },
+        { CardType.Way1_3_4, 6 },
+        { CardType.Way1_3_5, 6 },
+        { CardType.Way1_3_4_6, 12 },
+        { CardType.Way1_2_3_4_5_6, 6 },
     };
 
     public static Dictionary<AreaType, int> areaDeckCount = new Dictionary<AreaType, int> {
@@ -45,6 +43,6 @@ public static class Setting
         { AreaType.Exchange, 24 },
         { AreaType.Present, 16 },
         { AreaType.Gap, 12 },
-        { AreaType.Empty, 40 },
+        { AreaType.Grass, 40 },
     };
 }

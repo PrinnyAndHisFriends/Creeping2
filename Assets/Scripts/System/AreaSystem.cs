@@ -8,18 +8,33 @@ public class AreaSystem : MonoSingleton<AreaSystem>
 {
     public Tilemap tilemap;
     Vector3Int index;
+
+    List<Area> areaList = new List<Area>();
     Dictionary<Vector3Int, Area> areas = new Dictionary<Vector3Int, Area>();
 
     // Start is called before the first frame update
     void Awake()
     {
-        //Init
+        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Ant]; i++)
+            areaList.Add(new AntArea());
+        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Rotate]; i++)
+            areaList.Add(new RotateArea());
+        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Exchange]; i++)
+            areaList.Add(new ExchangeArea());
+        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Present]; i++)
+            areaList.Add(new PresentArea());
+        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Gap]; i++)
+            areaList.Add(new GapArea());
+        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Grass]; i++)
+            areaList.Add(new GrassArea());
+
         for (int i = Setting.MIN_AREA; i <= Setting.MAX_AREA; i++)
         {
             for (int j = Setting.MIN_AREA; j < Setting.MAX_AREA; j++)
             {
                 Vector3Int key = new Vector3Int(i ,j ,0);
-                areas[key] = new EmptyArea();
+                if (tilemap.HasTile(key))
+                    areas[key] = new EmptyArea();
             }
         }
     }
@@ -60,7 +75,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         if (tilemap.HasTile(index))
         {
             Log("ShowArea");
-            areas[index].Show();
+            areas[index].ShowForward(tilemap, index);
         }
     }
 
@@ -73,7 +88,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
             old.Trigger();
             old.Clear();
             areas[index] = area;
-            area.Init();
+            area.ShowForward(tilemap, index);
         }
     }
 

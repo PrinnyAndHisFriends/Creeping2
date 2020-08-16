@@ -5,18 +5,40 @@ using UnityEngine;
 
 public class CardSystem : MonoSingleton<CardSystem>
 {
+    List<Card> cards = new List<Card>();
     Queue<Card> cardQueue = new Queue<Card>();
     public event Action<Card> OnShowCardEvent;
     public Card currentCard;
 
+
     void Awake()
     {
-        //Init
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Gap]; i++)
+            cards.Add(new GapCard());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_2]; i++)
+            cards.Add(new Way1_2Card());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_3]; i++)
+            cards.Add(new Way1_3Card());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_4]; i++)
+            cards.Add(new Way1_4Card());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_2_4]; i++)
+            cards.Add(new Way1_2_4Card());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_3_4]; i++)
+            cards.Add(new Way1_3_4Card());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_3_5]; i++)
+            cards.Add(new Way1_3_5Card());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_3_4_6]; i++)
+            cards.Add(new Way1_3_4_6Card());
+        for (int i = 0; i < Setting.cardCount[Setting.CardType.Way1_2_3_4_5_6]; i++)
+            cards.Add(new Way1_2_3_4_5_6Card());
+
+        for (int i = 0; i < Setting.CARD_DECK_COUNT; i++)
         {
-            cardQueue.Enqueue(new EmptyCard());
+            int id = UnityEngine.Random.Range(0, cards.Count);
+            var data = cards[id];
+            cards.RemoveAt(id);
+            cardQueue.Enqueue(data);
         }
-        currentCard = new EmptyCard();
     }
 
     // Update is called once per frame
