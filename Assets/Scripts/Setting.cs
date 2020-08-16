@@ -10,7 +10,7 @@ public static class Setting
     public static int MAX_AREA = 6;
 
     public static int AREA_DECK_COUNT = 126;
-    public static int CARD_DECK_COUNT = 127;
+    public static int CARD_DECK_COUNT = 126;
 
     public enum CardType
     {

@@ -57,6 +57,12 @@ public class Way1_2Card : Card
                 return TileManager.Instance.way1_2_b;
             case 2:
                 return TileManager.Instance.way1_2_c;
+            case 3:
+                return TileManager.Instance.way1_2_d;
+            case 4:
+                return TileManager.Instance.way1_2_e;
+            case 5:
+                return TileManager.Instance.way1_2_f;
             default:
                 break;
         }
@@ -66,7 +72,7 @@ public class Way1_2Card : Card
     public override void Rotate()
     {
         i++;
-        i %= 3;
+        i %= 6;
     }
 
     public override Area ToArea()

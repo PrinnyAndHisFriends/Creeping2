@@ -35,10 +35,14 @@ public class CardSystem : MonoSingleton<CardSystem>
         for (int i = 0; i < Setting.CARD_DECK_COUNT; i++)
         {
             int id = UnityEngine.Random.Range(0, cards.Count);
+            //Debug.LogError(id + " " + cards.Count);
             var data = cards[id];
             cards.RemoveAt(id);
             cardQueue.Enqueue(data);
         }
+
+        if (cards.Count != 0)
+            Debug.LogError(ToString() + "Card count error");
     }
 
     // Update is called once per frame
