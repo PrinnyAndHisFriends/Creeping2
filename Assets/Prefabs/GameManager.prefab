@@ -108,12 +108,15 @@ MonoBehaviour:
   rotate: {fileID: 11400000, guid: 9f6faf4e32f910d44a9560c9fe67b24d, type: 2}
   exchange: {fileID: 11400000, guid: ca33a397ef3008f4eadb6294f8d43f07, type: 2}
   present: {fileID: 11400000, guid: dea75e3e71c960549991daa9659f4956, type: 2}
-  house: {fileID: 0}
+  house: {fileID: 11400000, guid: 457c6c0004efc1a409465200b2c0d284, type: 2}
   epresent: {fileID: 11400000, guid: 3a8afce0b916de94c8a048e10700289d, type: 2}
   grass: {fileID: 11400000, guid: d4ccfdaea4948924d9f8bfc7052f539e, type: 2}
   way1_2_a: {fileID: 11400000, guid: 6f9d68563cbb82c46bec0e8bc350e0c6, type: 2}
   way1_2_b: {fileID: 11400000, guid: cc95aac58b452084a9b250b0378fbb08, type: 2}
   way1_2_c: {fileID: 11400000, guid: bf5bbf6d03b720045b43d5aeab23fa0b, type: 2}
+  way1_2_d: {fileID: 11400000, guid: 08b3113afbca6a3498ee07718bd6c58d, type: 2}
+  way1_2_e: {fileID: 11400000, guid: 6ac7e8594075cea468da6657f4af2165, type: 2}
+  way1_2_f: {fileID: 11400000, guid: 672ffcbd91569404f848b4207fcd90f9, type: 2}
   way1_3_a: {fileID: 11400000, guid: 6ee36a1fa3213774d91d09a209ebf027, type: 2}
   way1_3_b: {fileID: 11400000, guid: b7217a991995c7a47a9a771d840ebc97, type: 2}
   way1_3_c: {fileID: 11400000, guid: d66e6af26567ac949be0d21e3b45c64e, type: 2}
@@ -139,7 +142,7 @@ MonoBehaviour:
   way1_3_4_e: {fileID: 11400000, guid: 3c853de260f2d1645b8e64dc95d4a5eb, type: 2}
   way1_3_4_f: {fileID: 11400000, guid: de22d1c93d3d0b345818987a3786062b, type: 2}
   way1_3_5_a: {fileID: 11400000, guid: 70046f3ffbf2bfa45aa9c4bc0e69be54, type: 2}
-  way1_3_5_b: {fileID: 0}
+  way1_3_5_b: {fileID: 11400000, guid: fb6b6ffbeceaf1f4aa0dd81f44623fa6, type: 2}
   way1_3_4_6_a: {fileID: 11400000, guid: e561e12baba645e4fbf2f9de45233ce6, type: 2}
   way1_3_4_6_b: {fileID: 11400000, guid: 8e0735c27733b4e43a3c2e790b8615a1, type: 2}
   way1_3_4_6_c: {fileID: 11400000, guid: 28e05101f050d0243bbacb4143befd4d, type: 2}

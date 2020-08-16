@@ -30,13 +30,26 @@ public class AreaSystem : MonoSingleton<AreaSystem>
 
         for (int i = Setting.MIN_AREA; i <= Setting.MAX_AREA; i++)
         {
-            for (int j = Setting.MIN_AREA; j < Setting.MAX_AREA; j++)
+            for (int j = Setting.MIN_AREA; j <= Setting.MAX_AREA; j++)
             {
                 Vector3Int key = new Vector3Int(i ,j ,0);
+                if (i==0 && j==0)
+                {
+                    areas[key] = new HouseArea();
+                    continue;
+                }
                 if (tilemap.HasTile(key))
-                    areas[key] = new EmptyArea();
+                {
+                    int id = UnityEngine.Random.Range(0, areaList.Count);
+                    var data = areaList[id];
+                    areaList.RemoveAt(id);
+                    areas[key] = data;
+                }
             }
         }
+
+        if (areaList.Count != 0)
+            Debug.LogError(ToString() + "Area count error" + areaList.Count);
     }
 
     // Update is called once per frame

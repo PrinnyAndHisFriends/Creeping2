@@ -11,6 +11,7 @@ public class UICard : MonoBehaviour
     {
         img = GetComponent<Image>();
         dh = gameObject.AddComponent<UIDragHandler>();
+        dh.OnDragStart += OnDragStart;
         dh.OnDragEnd += OnDragEnd;
         CardSystem.Instance.OnShowCardEvent += ShowCard;
     }
@@ -38,9 +39,16 @@ public class UICard : MonoBehaviour
         img.sprite = card.GetTile().sprite;
     }
 
+    public void OnDragStart()
+    {
+        Debug.Log("OnDragStart");
+        GetComponent<Button>().enabled = false;
+    }
     public void OnDragEnd()
     {
+        Debug.Log("OnDragEnd");
         GameManager.Instance.CurrentPlayer.UseCard();
+        GetComponent<Button>().enabled = true;
     }
 
     public void CardRemain()

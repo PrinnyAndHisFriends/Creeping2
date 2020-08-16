@@ -19,6 +19,9 @@ public class TileManager : MonoSingleton<TileManager>
     public Tile way1_2_a;
     public Tile way1_2_b;
     public Tile way1_2_c;
+    public Tile way1_2_d;
+    public Tile way1_2_e;
+    public Tile way1_2_f;
 
     public Tile way1_3_a;
     public Tile way1_3_b;
