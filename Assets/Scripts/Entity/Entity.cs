@@ -2,40 +2,72 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Entity : MonoBehaviour
+public abstract class Entity : MonoBehaviour
 {
-    public bool isActive = true;
-    private bool isFinishMove = false;
-
-    public bool IsFinishMove { get => isActive && isFinishMove; set => isFinishMove = value; }
-    public Vector3Int CurrentAreaIndex { get; set; }
-
-
-    // Start is called before the first frame update
-    void Start()
+    public enum InnerState { Idle, Moved, Dead }
+    InnerState state = InnerState.Idle;
+    public InnerState State
     {
-        //Init currentAreaIndex
+        get
+        {
+            return state;
+        }
+        set
+        {
+            switch (state)
+            {
+                case InnerState.Idle:
+                    break;
+                case InnerState.Moved:
+                    break;
+                case InnerState.Dead:
+                    break;
+                default:
+                    break;
+            }
+            state = value;
+            switch (state)
+            {
+                case InnerState.Idle:
+                    break;
+                case InnerState.Moved:
+                    break;
+                case InnerState.Dead:
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public bool IsFinishMove { get => State == InnerState.Moved; }
+    public bool IsDead { get => State == InnerState.Dead; }
 
-    public void AttackedBy(Entity entity)
-    {
+    public Vector3Int Index { get; set; }
+    public Client player;
 
-    }
-
-
-    public void Init()
-    {
-
-    }
+    public abstract void AttackedBy(Entity entity);
 
     public void Dead()
     {
+        EntitySystem.Instance.DestroyEntity(this);
+    }
 
+    public void Destroy()
+    {
+        Destroy(gameObject);
+    }
+
+
+    public void Init(Vector3Int index, Client player)
+    {
+        Index = index;
+        this.player = player;
+        transform.position = AreaSystem.Instance.GetWorldPosition(index);
+    }
+
+    public void TurnInit()
+    {
+        State = InnerState.Idle;
     }
 }

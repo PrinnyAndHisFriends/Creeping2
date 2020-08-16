@@ -109,4 +109,9 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     {
         return true;
     }
+
+    public Vector3 GetWorldPosition(Vector3Int index)
+    {
+        return tilemap.GetCellCenterWorld(index);
+    }
 }

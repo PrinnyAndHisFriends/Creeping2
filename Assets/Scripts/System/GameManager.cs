@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class GameManager : MonoSingleton<GameManager>
 {
-    TurnType cp = TurnType.One;
+    PlayerType cp = PlayerType.PlayerOne;
 
-    public TurnType CurrentTurn {
+    public PlayerType CurrentTurn {
         get {
             return cp;
         }
@@ -20,13 +20,15 @@ public class GameManager : MonoSingleton<GameManager>
             }
             else
             {
-                cp = TurnType.Empty;
+                cp = PlayerType.Empty;
                 OnGameEnd();
             }
         }
     }
     public List<Client> players;
     public Client CurrentPlayer { get; set; }
+    public Client PlayerOne;
+    public Client PlayerTwo;
 
     public event Action OnTurnStartEvent;
     public event Action OnTurnEndEvent;
@@ -74,17 +76,17 @@ public class GameManager : MonoSingleton<GameManager>
         OnTurnEndEvent?.Invoke();
     }
 
-    void Change()
+    public void MoveEndAndChangeTurn()
     {
-        if (CurrentTurn == TurnType.One)
-            CurrentTurn = TurnType.Two;
-        else if (CurrentTurn == TurnType.Two)
-            CurrentTurn = TurnType.One;
+        if (CurrentTurn == PlayerType.PlayerOne)
+            CurrentTurn = PlayerType.Two;
+        else if (CurrentTurn == PlayerType.Two)
+            CurrentTurn = PlayerType.PlayerOne;
     }
 
-    public void MoveEnd()
+    public void EndGame()
     {
-        Change();
+        OnGameEnd();
     }
 
     bool IsGameEnd()
@@ -93,7 +95,7 @@ public class GameManager : MonoSingleton<GameManager>
         ret |= CardSystem.Instance.IsDeckEmpty();
         return ret;
     }
-    public bool IsPlayer(TurnType player)
+    public bool IsPlayer(PlayerType player)
     {
         return CurrentTurn == player;
     }
