@@ -49,7 +49,7 @@ public abstract class Entity : MonobehaviourExtension
 
     private void OnMouseDrag()
     {
-        if (player.IsMoveMode)
+        if (player.IsMoveMode && !IsFinishMove)
         {
             transform.position = AreaSystem.Instance.mousePosInWorld;
         }
@@ -57,7 +57,7 @@ public abstract class Entity : MonobehaviourExtension
 
     private void OnMouseUp()
     {
-        if (player.IsMoveMode)
+        if (player.IsMoveMode && !IsFinishMove)
         {
             var worldPos = AreaSystem.Instance.mousePosInWorld;
             var targetIndex = AreaSystem.Instance.GetIndex(worldPos);
