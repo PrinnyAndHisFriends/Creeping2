@@ -4,90 +4,8 @@ using UnityEngine;
 
 public class Client : MonobehaviourExtension
 {
-    private enum InnerState { Empty, Card, Trigger, Move }
-    private InnerState State { get; set; } = InnerState.Empty;
-
-    public bool IsCardMode { get => State== InnerState.Card; }
-    public bool IsMoveMode { get => State== InnerState.Move; }
-
-    public PlayerType activeType;
+    #region Entity
     List<Entity> entityList = new List<Entity>();
-    Card currentCard;
-
-    private void Start()
-    {
-        if (activeType == PlayerType.PlayerOne)
-        {
-            EntitySystem.Instance.GenerateEntity(Setting.EntityType.Girl, Setting.girlStartIndex);
-            EntitySystem.Instance.GenerateEntity(Setting.EntityType.House, Setting.houseStartIndex);
-        }
-        else
-        {
-            EntitySystem.Instance.GenerateEntity(Setting.EntityType.Ant, Setting.antStartIndex);
-        }
-    }
-
-
-    public void OnTurnStart()
-    {
-        enabled = GameManager.Instance.IsPlayer(activeType);
-        if (enabled)
-        {
-            currentCard = CardSystem.Instance.ShowCard();
-            entityList.ForEach((a) => a.TurnStart());
-            State = InnerState.Card;
-            Log("OnTurnStart");
-        }
-    }
-
-    public void OnTurnEnd()
-    {
-        enabled = false;
-        entityList.ForEach((a) => a.TurnEnd());
-        Log("OnTurnEnd");
-    }
-
-
-    public void UseCard()
-    {
-        if (State == InnerState.Card)
-        {
-            Vector3Int index;
-            if (!AreaSystem.Instance.GetTile(out index))
-                return;
-            if (CardSystem.Instance.UseCard(currentCard, index))
-            {
-                State = InnerState.Trigger;
-                if ()
-                AreaSystem.Instance.TriggerArea(index,
-                    () => {
-                        AreaSystem.Instance.SetArea(index, currentCard.ToArea());
-                        State = InnerState.Move;
-                    });
-            }
-        }
-    }
-
-    public void Move(Entity entity, Vector3Int oriIndex, Vector3Int targetIndex)
-    {
-        if (State == InnerState.Move)
-        {
-            if (oriIndex == targetIndex)
-                return;
-            var targetPos = AreaSystem.Instance.GetWorldPosition(targetIndex);
-            if (AreaSystem.Instance.CanMove(oriIndex, targetIndex))
-            {
-                entity.MoveTo(targetPos);
-                EntitySystem.Instance.Attack(entity, targetIndex);
-                AreaSystem.Instance.TriggerArea(targetIndex, ()=> {
-                    EntitySystem.Instance.Attack(entity, targetIndex);
-                    CheckEntity();
-                });
-            }
-        }
-    }
-
-
     public void AddEntity(Entity entity)
     {
         entityList.Add(entity);
@@ -102,8 +20,70 @@ public class Client : MonobehaviourExtension
     {
         if (entityList.TrueForAll((a) => a.IsFinishMove))
         {
-            State = InnerState.Empty;
-            GameManager.Instance.MoveEndAndChangeTurn();
+            GameManager.Instance.MoveTurnEnd();
         }
     }
+    #endregion
+
+
+    #region Game Logic
+    public PlayerType playerType;
+    public bool IsActivePlayer { get => GameManager.Instance.IsPlayer(playerType); }
+    Vector3Int index;
+
+    public void GameStart()
+    {
+        if (playerType == PlayerType.PlayerOne)
+        {
+            EntitySystem.Instance.GenerateEntity(Setting.EntityType.Girl, Setting.girlStartIndex);
+            EntitySystem.Instance.GenerateEntity(Setting.EntityType.House, Setting.houseStartIndex);
+        }
+        else
+        {
+            EntitySystem.Instance.GenerateEntity(Setting.EntityType.Ant, Setting.antStartIndex);
+        }
+    }
+
+    public bool CanUseCard()
+    {
+        return AreaSystem.Instance.GetMouseIndex(out index)
+            && CardSystem.Instance.CanUseCard(index);
+    }
+
+    public void TriggerArea()
+    {
+        AreaSystem.Instance.TriggerArea(index, GameManager.Instance.UseCard);
+    }
+
+    public void UseCard()
+    {
+        if (CardSystem.Instance.CanSetCard(index))
+            AreaSystem.Instance.SetArea(index, CardSystem.Instance.currentCard.ToArea());
+    }
+
+    public void MoveTurnStart()
+    {
+        entityList.ForEach((a) => a.MoveTurnStart());
+    }
+
+    public void MoveTurnEnd()
+    { 
+        entityList.ForEach((a) => a.MoveTurnEnd());
+    }
+
+    public void TurnEnd()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void ChangeTurn()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void GameEnd()
+    {
+        throw new System.NotImplementedException();
+    }
+    #endregion
 }

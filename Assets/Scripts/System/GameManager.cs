@@ -3,39 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoSingleton<GameManager>
+interface IGameLogic
 {
-    PlayerType cp = PlayerType.PlayerOne;
+    void GameStart();
+    void TurnStart();
+    void CardTurnStart();
+    void WantToUseCard();
+    void UseCard();
+    void CardTurnEnd();
+    void MoveTurnStart();
+    void MoveTurnEnd();
+    void TurnEnd();
+    void ChangeTurn();
+    void GameEnd();
+}
 
-    public PlayerType CurrentTurn {
-        get {
-            return cp;
-        }
-        set {
-            OnTurnEndEvent?.Invoke();
-            if (!IsGameEnd())
-            {
-                cp = value;
-                OnTurnStartEvent?.Invoke();
-            }
-            else
-            {
-                cp = PlayerType.Empty;
-                OnGameEndEvent?.Invoke();
-            }
-        }
-    }
-    public List<Client> players;
-    public Client CurrentPlayer { get; set; }
+public class GameManager : MonoSingleton<GameManager>, IGameLogic
+{
+    public PlayerType CurrentTurn { get; set;}
+
+    public Client CurrentPlayer { get => PlayerOne.playerType == CurrentTurn ? PlayerOne : PlayerTwo; }
     public Client PlayerOne;
     public Client PlayerTwo;
 
     public event Action OnGameStartEvent;
     public event Action OnTurnStartEvent;
     public event Action OnCardTurnStartEvent;
-    public event Action OnCardTurnTriggerAreaEvent;
+    public event Action OnCardTurnEndEvent;
     public event Action OnMoveTurnStartEvent;
-    public event Action OnMoveTurnTriggerAreaEvent;
+    public event Action OnMoveTurnEndEvent;
     public event Action OnTurnEndEvent;
     public event Action OnGameEndEvent;
 
@@ -44,9 +40,9 @@ public class GameManager : MonoSingleton<GameManager>
         OnGameStartEvent += () => Log("OnGameStart");
         OnTurnStartEvent += () => Log("OnTurnStartEvent");
         OnCardTurnStartEvent += () => Log("OnCardTurnStartEvent");
-        OnCardTurnTriggerAreaEvent += () => Log("OnCardTurnTriggerAreaEvent");
+        OnCardTurnEndEvent += () => Log("OnCardTurnEndEvent");
         OnMoveTurnStartEvent += () => Log("OnMoveTurnStartEvent");
-        OnMoveTurnTriggerAreaEvent += () => Log("OnMoveTurnTriggerAreaEvent");
+        OnMoveTurnEndEvent += () => Log("OnMoveTurnEndEvent");
         OnTurnEndEvent += () => Log("OnTurnEndEvent");
         OnGameEndEvent += ()=> Log("OnGameEnd");
     }
@@ -54,42 +50,88 @@ public class GameManager : MonoSingleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
+        GameStart();
+        TurnStart();
+        //初始化GameManager - Event - Player
+        //结束化Player - Event - GameManager
+    }
+    public void GameStart()
+    {
         OnGameStartEvent?.Invoke();
+        PlayerOne.GameStart();
+        PlayerTwo.GameStart();
+    }
+
+    public void TurnStart()
+    {
         OnTurnStartEvent?.Invoke();
+        //CurrentPlayer.TurnStart();
+        CardTurnStart();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void CardTurnStart()
     {
-        
+        OnCardTurnStartEvent?.Invoke();
     }
 
-    void OnTurnStart()
+    public void WantToUseCard()
     {
-        Log("OnTurnStart");
-        CurrentPlayer = players.Find((a) => a.activeType == CurrentTurn);
-        CurrentPlayer.OnTurnStart();
+        if (CurrentPlayer.CanUseCard())
+            CurrentPlayer.TriggerArea();
     }
-    void OnTurnEnd()
+
+    public void UseCard()
     {
-        Log("OnTurnEnd");
-        CurrentPlayer.OnTurnEnd();
+        CurrentPlayer.UseCard();
+        CardTurnEnd();
+    }
+
+    public void CardTurnEnd()
+    {
+        OnCardTurnEndEvent?.Invoke();
+    }
+
+    public void MoveTurnStart()
+    {
+        OnMoveTurnStartEvent?.Invoke();
+        CurrentPlayer.MoveTurnStart();
+    }
+
+
+    public void MoveTurnEnd()
+    {
+        OnMoveTurnEndEvent?.Invoke();
+        CurrentPlayer.MoveTurnEnd();
+    }
+
+    public void TurnEnd()
+    {
+        CurrentPlayer.TurnEnd();
         OnTurnEndEvent?.Invoke();
+        if (!IsGameEnd())
+        {
+            ChangeTurn();
+        }
+        else
+        {
+            GameEnd();
+        }
     }
 
-    public void MoveEndAndChangeTurn()
+    public void ChangeTurn()
     {
-        Log("MoveEndAndChangeTurn");
         if (CurrentTurn == PlayerType.PlayerOne)
             CurrentTurn = PlayerType.Two;
         else if (CurrentTurn == PlayerType.Two)
             CurrentTurn = PlayerType.PlayerOne;
+        TurnStart();
     }
 
-    public void EndGame()
+    public void GameEnd()
     {
         OnGameEndEvent?.Invoke();
     }
+
 
     bool IsGameEnd()
     {

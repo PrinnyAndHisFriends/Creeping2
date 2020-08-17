@@ -90,17 +90,8 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         }
     }
 
-    public bool GetTile(out Vector3Int outIndex)
-    {
-        if (tilemap.HasTile(index))
-        {
-            outIndex = index;
-            return true;
-        }
-        outIndex = Vector3Int.zero;
-        return false;
-    }
 
+    #region Area
     void ShowArea(Vector3Int index)
     {
         if (tilemap.HasTile(index))
@@ -110,7 +101,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         }
     }
 
-    Action OnFinishEvent;
+    public event Action OnFinishEvent;
     public void TriggerArea(Vector3Int index, Action OnFinish)
     {
         if (tilemap.HasTile(index))
@@ -118,17 +109,23 @@ public class AreaSystem : MonoSingleton<AreaSystem>
             Log("TriggerArea");
             var old = areas[index];
             old.ShowForward(tilemap, index);
-            this.OnFinishEvent += OnFinish;
             old.Trigger(index);
-            StartCoroutine(TriggerFinish());
+            OnFinishEvent = OnFinish;
         }
     }
-
-    public IEnumerator TriggerFinish()
+    public void OnTriggerAreaFinish()
     {
-        yield return new WaitForSeconds(3);
         OnFinishEvent?.Invoke();
-        OnFinishEvent = null;
+    }
+
+    public bool HasArea(Vector3Int index)
+    {
+        return tilemap.HasTile(index) ;
+    }
+
+    public Area GetArea(Vector3Int index)
+    {
+        return areas.ContainsKey(index) ? areas[index] : null;
     }
 
     public void SetArea(Vector3Int index, Area area)
@@ -136,14 +133,32 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         if (tilemap.HasTile(index))
         {
             Log("SetArea");
-            areas[index] = area;
-            area.ShowForward(tilemap, index);
+            Area fin = CheckRemainedArea(areas[index], area);
+            areas[index] = fin;
+            fin.ShowForward(tilemap, index);
         }
     }
 
+    Area CheckRemainedArea(Area ori, Area set)
+    {
+        return null;
+    }
+    #endregion
+
     public bool CanMove(Vector3Int index1, Vector3Int index2)
     {
-        return true;
+        return index1 != index2;
+    }
+
+    public bool GetMouseIndex(out Vector3Int outIndex)
+    {
+        if (tilemap.HasTile(index))
+        {
+            outIndex = index;
+            return true;
+        }
+        outIndex = Vector3Int.zero;
+        return false;
     }
 
     public Vector3 GetWorldPosition(Vector3Int index)

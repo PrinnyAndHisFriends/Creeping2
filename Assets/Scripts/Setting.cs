@@ -6,7 +6,7 @@ public enum PlayerType { Empty, PlayerOne, Two };
 
 public static class Setting 
 {
-    public static int LIFE = 5;
+    public static int LIFE = 3;
     public static int MIN_AREA = -6;
     public static int MAX_AREA = 6;
 
@@ -24,14 +24,14 @@ public static class Setting
     }
     public enum AreaType
     {
-        House, Ant, Rotate, Exchange, Present, Grass,
+        House, Ant, Rotate, Exchange, Present, Grass, EPresent,
         Gap, Way1_2, Way1_3, Way1_4, Way1_2_4,
         Way1_3_4, Way1_3_5, Way1_3_4_6, Way1_2_3_4_5_6,
     }
 
     public enum EntityType
     {
-        Girl, Ant, House,
+        Girl, Ant, House, EPresent
     }
 
     public static Dictionary<CardType, int> cardCount = new Dictionary<CardType, int> {
@@ -51,7 +51,7 @@ public static class Setting
         { AreaType.Ant, 10 },
         { AreaType.Rotate, 24 },
         { AreaType.Exchange, 24 },
-        { AreaType.Present, 16 },
+        { AreaType.EPresent, 16 },
         { AreaType.Gap, 12 },
         { AreaType.Grass, 38 },
     };

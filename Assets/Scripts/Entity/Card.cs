@@ -8,10 +8,26 @@ public abstract class Card
     public abstract void Rotate();
     public abstract Area ToArea();
     public abstract Tile GetTile();
+    public virtual bool CanUseCard(Area area)
+    {
+        if (area.IsShowed)
+            return !(area is GapArea);
+        else
+            return true;
+    }
+    public virtual bool CanSetCard(Area area)
+    {
+        return !(area is GapArea);
+    }
 }
 
 public class EmptyCard : Card
 {
+    public override bool CanUseCard(Area area)
+    {
+        return true;
+    }
+
     public override Tile GetTile()
     {
         return TileManager.Instance.empty;
@@ -47,6 +63,7 @@ public class GapCard : Card
 public class Way1_2Card : Card
 {
     int i = 0;
+
     public override Tile GetTile()
     {
         switch (i)

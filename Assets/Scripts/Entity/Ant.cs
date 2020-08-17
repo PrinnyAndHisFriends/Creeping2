@@ -17,23 +17,29 @@ public class Ant : Entity
         animator.SetTrigger("Start");
     }
 
-    public override void TurnStart()
+    public override void MoveTurnStart()
     {
-        base.TurnStart();
+        base.MoveTurnStart();
         animator.SetBool("Idle", true);
     }
-    public override void TurnEnd()
+    public override void MoveTurnEnd()
     {
-        base.TurnEnd();
+        base.MoveTurnEnd();
         animator.SetBool("Idle", false);
     }
 
-    public override bool CanWin(Entity entity)
+    public override bool AttackByAndAlive(Entity entity)
     {
         if (entity is Girl)
+        {
             Dead();
+            return false;
+        }
         else if (entity is House)
+        {
             Dead();
-        return false;
+            return false;
+        }
+        return true;
     }
 }

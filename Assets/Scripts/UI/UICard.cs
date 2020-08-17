@@ -41,13 +41,11 @@ public class UICard : MonoBehaviour
 
     public void OnDragStart()
     {
-        //Debug.Log("OnDragStart");
         GetComponent<Button>().enabled = false;
     }
     public void OnDragEnd()
     {
-        //Debug.Log("OnDragEnd");
-        GameManager.Instance.CurrentPlayer.UseCard();
+        GameManager.Instance.WantToUseCard();
         GetComponent<Button>().enabled = true;
     }
 

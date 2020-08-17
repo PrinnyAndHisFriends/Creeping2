@@ -16,23 +16,26 @@ public class Girl : Entity
         base.Init(index, player);
         animator.SetTrigger("Start");
     }
-    public override void TurnStart()
+    public override void MoveTurnStart()
     {
-        base.TurnStart();
+        base.MoveTurnStart();
         animator.SetBool("Idle", true);
     }
-    public override void TurnEnd()
+    public override void MoveTurnEnd()
     {
-        base.TurnEnd();
+        base.MoveTurnEnd();
         animator.SetBool("Idle", false);
     }
 
-    public override bool CanWin(Entity entity)
+    public override bool AttackByAndAlive(Entity entity)
     {
-        if (entity is Ant)
-            return true;
-        else if (entity is House)
+        return true;
+    }
+
+    public override bool CanMoveToArea(Area area)
+    {
+        if (area is GapArea)
             return false;
-        return false;
+        return true;
     }
 }

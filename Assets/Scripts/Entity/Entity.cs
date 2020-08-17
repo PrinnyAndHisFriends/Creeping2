@@ -4,19 +4,23 @@ using UnityEngine;
 
 public abstract class Entity : MonobehaviourExtension
 {
-    public enum InnerState { Idle, Moved, Dead }
-
-    public InnerState State { get; set; } = InnerState.Idle;
-
-    public bool IsFinishMove { get => State == InnerState.Moved; }
-
-    public Vector3Int Index { get; set; }
+    public bool IsFinishMove { get; set; }
+    public bool CanDrag { get => player.IsActivePlayer && !IsFinishMove; }
+    public Vector3Int index { get; set; }
     public Client player;
 
+    public Vector3 oldPos;
 
+    private void OnMouseDown()
+    {
+        if (CanDrag)
+        {
+            oldPos = transform.position;
+        }
+    }
     private void OnMouseDrag()
     {
-        if (player.IsMoveMode && !IsFinishMove)
+        if (CanDrag)
         {
             transform.position = AreaSystem.Instance.mousePosInWorld;
         }
@@ -24,44 +28,64 @@ public abstract class Entity : MonobehaviourExtension
 
     private void OnMouseUp()
     {
-        if (player.IsMoveMode && !IsFinishMove)
+        if (CanDrag)
         {
             var worldPos = AreaSystem.Instance.mousePosInWorld;
             var targetIndex = AreaSystem.Instance.GetIndex(worldPos);
-            player.Move(this, Index, targetIndex);
+            if (CanMove(targetIndex))
+            {
+                EntitySystem.Instance.Move(this, targetIndex);
+            }
+            else
+            {
+                transform.position = oldPos;
+            }
         }
     }
 
-    public abstract bool CanWin(Entity entity);
-
-    public virtual void Dead()
+    public virtual void Init(Vector3Int index, Client player=null)
     {
-        EntitySystem.Instance.DestroyEntity(this);
-        StartCoroutine(WaittingForDestroy());
-    }
-
-    public virtual void Init(Vector3Int index, Client player)
-    {
-        Index = index;
         this.player = player;
+        this.index = index;
         SetPosition(AreaSystem.Instance.GetWorldPosition(index));
     }
 
-    public void MoveTo(Vector3 targetPos)
+    public bool CanMove(Vector3Int targetIndex)
     {
-        State = InnerState.Moved;
+        if (index == targetIndex)
+            return false;
+        return index != targetIndex || EntitySystem.Instance.CanMoveIfHasSomeEntity(targetIndex) || CanMoveToArea(AreaSystem.Instance.GetArea(targetIndex));
+    }
+
+    public void Move(Vector3Int targetIndex)
+    {
+        var targetPos = AreaSystem.Instance.GetWorldPosition(targetIndex);
         SetPosition(targetPos);
+        IsFinishMove = true;
     }
 
-    public virtual void TurnStart()
+    public virtual void Dead()
     {
-        State = InnerState.Idle;
+        EntitySystem.Instance.UnregistryEntity(this);
+        StartCoroutine(WaittingForDestroy());
     }
 
-    public virtual void TurnEnd()
+    public virtual void MoveTurnStart()
     {
-        State = InnerState.Idle;
+        IsFinishMove = false;
     }
+
+    public virtual void MoveTurnEnd()
+    {
+        IsFinishMove = false;
+    }
+
+    public virtual bool CanMoveToArea(Area area)
+    {
+        return true;
+    }
+
+    public abstract bool AttackByAndAlive(Entity entity);
 
     void SetPosition(Vector3 pos)
     {
@@ -71,10 +95,10 @@ public abstract class Entity : MonobehaviourExtension
     bool doDestroy = false;
     IEnumerator WaittingForDestroy()
     {
-        yield return new WaitUntil(()=>doDestroy);
+        yield return new WaitUntil(() => doDestroy);
         Destroy(gameObject);
     }
-    
+
     void DoDestroy()
     {
         doDestroy = true;

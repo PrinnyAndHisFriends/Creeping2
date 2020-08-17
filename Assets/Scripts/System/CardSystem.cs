@@ -42,6 +42,8 @@ public class CardSystem : MonoSingleton<CardSystem>
 
         if (cards.Count != 0)
             Debug.LogError(ToString() + "Card count error");
+
+        GameManager.Instance.OnCardTurnStartEvent += ShowCard;
     }
 
     // Update is called once per frame
@@ -50,17 +52,22 @@ public class CardSystem : MonoSingleton<CardSystem>
         
     }
 
-    public Card ShowCard()
+    public void ShowCard()
     {
         var c = cardQueue.Dequeue();
         OnShowCardEvent?.Invoke(c);
         currentCard = c;
-        return c;
     }
 
-    public bool UseCard(Card card, Vector3Int index)
+    public bool CanUseCard(Vector3Int index)
     {
-        return true;
+        Area area = AreaSystem.Instance.GetArea(index);
+        return !EntitySystem.Instance.HasEntity(index) && currentCard.CanUseCard(area);
+    }
+    public bool CanSetCard(Vector3Int index)
+    {
+        Area area = AreaSystem.Instance.GetArea(index);
+        return currentCard.CanSetCard(area);
     }
 
     public bool IsDeckEmpty()

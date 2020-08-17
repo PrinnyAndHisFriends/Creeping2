@@ -523,6 +523,22 @@ PrefabInstance:
       propertyPath: tilemap
       value: 
       objectReference: {fileID: 2145112900}
+    - target: {fileID: 1015896004255726750, guid: e3763f1b0f2007b4db83177cb2d91fe3,
+        type: 3}
+      propertyPath: epresent
+      value: 
+      objectReference: {fileID: 9107359391505644876, guid: 5f04b9163ac749a4ba311cecaac190f4,
+        type: 3}
+    - target: {fileID: 1015896004828461804, guid: e3763f1b0f2007b4db83177cb2d91fe3,
+        type: 3}
+      propertyPath: playerType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1015896004976378518, guid: e3763f1b0f2007b4db83177cb2d91fe3,
+        type: 3}
+      propertyPath: playerType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3763f1b0f2007b4db83177cb2d91fe3, type: 3}
 --- !u!1001 &6099509303067748421

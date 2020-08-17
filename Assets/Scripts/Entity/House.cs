@@ -5,13 +5,15 @@ using UnityEngine;
 public class House : Entity
 {
     public int life = Setting.LIFE;
-    public override bool CanWin(Entity entity)
+    public override bool AttackByAndAlive(Entity entity)
     {
         if (entity is Ant)
         {
             life--;
             if (life == 0)
-                GameManager.Instance.EndGame();
+            {
+                GameManager.Instance.GameEnd();
+            }
         }
         return true;
     }
