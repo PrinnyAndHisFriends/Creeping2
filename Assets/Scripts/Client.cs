@@ -58,6 +58,7 @@ public class Client : MonobehaviourExtension
             if (CardSystem.Instance.UseCard(currentCard, index))
             {
                 State = InnerState.Trigger;
+                if ()
                 AreaSystem.Instance.TriggerArea(index,
                     () => {
                         AreaSystem.Instance.SetArea(index, currentCard.ToArea());

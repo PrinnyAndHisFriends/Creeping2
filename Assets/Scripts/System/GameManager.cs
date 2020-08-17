@@ -12,16 +12,16 @@ public class GameManager : MonoSingleton<GameManager>
             return cp;
         }
         set {
-            OnTurnEnd();
+            OnTurnEndEvent?.Invoke();
             if (!IsGameEnd())
             {
                 cp = value;
-                OnTurnStart();
+                OnTurnStartEvent?.Invoke();
             }
             else
             {
                 cp = PlayerType.Empty;
-                OnGameEnd();
+                OnGameEndEvent?.Invoke();
             }
         }
     }
@@ -30,20 +30,32 @@ public class GameManager : MonoSingleton<GameManager>
     public Client PlayerOne;
     public Client PlayerTwo;
 
-    public event Action OnTurnStartEvent;
-    public event Action OnTurnEndEvent;
     public event Action OnGameStartEvent;
+    public event Action OnTurnStartEvent;
+    public event Action OnCardTurnStartEvent;
+    public event Action OnCardTurnTriggerAreaEvent;
+    public event Action OnMoveTurnStartEvent;
+    public event Action OnMoveTurnTriggerAreaEvent;
+    public event Action OnTurnEndEvent;
     public event Action OnGameEndEvent;
 
     private void Awake()
     {
+        OnGameStartEvent += () => Log("OnGameStart");
+        OnTurnStartEvent += () => Log("OnTurnStartEvent");
+        OnCardTurnStartEvent += () => Log("OnCardTurnStartEvent");
+        OnCardTurnTriggerAreaEvent += () => Log("OnCardTurnTriggerAreaEvent");
+        OnMoveTurnStartEvent += () => Log("OnMoveTurnStartEvent");
+        OnMoveTurnTriggerAreaEvent += () => Log("OnMoveTurnTriggerAreaEvent");
+        OnTurnEndEvent += () => Log("OnTurnEndEvent");
+        OnGameEndEvent += ()=> Log("OnGameEnd");
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        OnGameStart();
-        OnTurnStart();
+        OnGameStartEvent?.Invoke();
+        OnTurnStartEvent?.Invoke();
     }
 
     // Update is called once per frame
@@ -52,21 +64,10 @@ public class GameManager : MonoSingleton<GameManager>
         
     }
 
-    void OnGameStart()
-    {
-        Log("OnGameStart");
-        OnGameStartEvent?.Invoke();
-    }
-    void OnGameEnd()
-    {
-        Log("OnGameEnd");
-        OnGameEndEvent?.Invoke();
-    }
     void OnTurnStart()
     {
         Log("OnTurnStart");
         CurrentPlayer = players.Find((a) => a.activeType == CurrentTurn);
-        OnTurnStartEvent?.Invoke();
         CurrentPlayer.OnTurnStart();
     }
     void OnTurnEnd()
@@ -87,7 +88,7 @@ public class GameManager : MonoSingleton<GameManager>
 
     public void EndGame()
     {
-        OnGameEnd();
+        OnGameEndEvent?.Invoke();
     }
 
     bool IsGameEnd()
