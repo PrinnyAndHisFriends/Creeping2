@@ -14,6 +14,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     List<Area> areaList = new List<Area>();
     Dictionary<Vector3Int, Area> areas = new Dictionary<Vector3Int, Area>();
 
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -23,7 +24,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
             areaList.Add(new RotateArea());
         for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Exchange]; i++)
             areaList.Add(new ExchangeArea());
-        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Present]; i++)
+        for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.EPresent]; i++)
             areaList.Add(new PresentArea());
         for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Gap]; i++)
             areaList.Add(new GapArea());
@@ -38,6 +39,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
                 if (key == Setting.houseStartIndex)
                 {
                     areas[key] = new HouseArea();
+                    areas[key].Trigger(key);
                     areas[key].ShowForward(tilemap, key);
                     continue;
                 }
@@ -82,8 +84,14 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         }
     }
 
+    public void ToRotateMode()
+    {
+        State = InnerState.Rotate;
+    }
+
     public void ClickTile()
     {
+        if ()
         if (tilemap.HasTile(index))
         {
             Log("ClickTile");
@@ -170,4 +178,22 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     {
         return tilemap.WorldToCell(worldPos);
     }
+}
+
+interface IAreaModeStrategy
+{
+    void OnAreaClick(Vector3Int index);
+}
+
+public class NormalMode : IAreaModeStrategy
+{
+
+}
+public class RotateMode : IAreaModeStrategy
+{
+
+}
+public class ExchangeMode : IAreaModeStrategy
+{
+
 }

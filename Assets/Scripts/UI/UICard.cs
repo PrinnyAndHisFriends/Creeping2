@@ -6,14 +6,17 @@ using UnityEngine.UI;
 public class UICard : MonoBehaviour
 {
     Image img;
+    Button btn;
     UIDragHandler dh;
     private void Awake()
     {
         img = GetComponent<Image>();
+        btn = GetComponent<Button>();
         dh = gameObject.AddComponent<UIDragHandler>();
         dh.OnDragStart += OnDragStart;
         dh.OnDragEnd += OnDragEnd;
-        UIManager.Instance.on
+        GameManager.Instance.OnCardTurnStartEvent += () => { btn.interactable = true; dh.enabled = true; };
+        GameManager.Instance.OnCardWillbeUsedEvent += () => { btn.interactable = false; dh.enabled = false; };
         CardSystem.Instance.OnShowCardEvent += ShowCard;
     }
     // Start is called before the first frame update
@@ -42,16 +45,12 @@ public class UICard : MonoBehaviour
 
     public void OnDragStart()
     {
-        GetComponent<Button>().enabled = false;
+        btn.enabled = false;
     }
+
     public void OnDragEnd()
     {
         GameManager.Instance.WantToUseCard();
-        GetComponent<Button>().enabled = true;
-    }
-
-    public void CardRemain()
-    {
-
+        btn.enabled = true;
     }
 }

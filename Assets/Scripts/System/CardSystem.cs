@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CardSystem : MonoSingleton<CardSystem>
+public class CardSystem : MonoSingleton<CardSystem>, IGameEvent
 {
     List<Card> cards = new List<Card>();
     Queue<Card> cardQueue = new Queue<Card>();
@@ -43,7 +43,8 @@ public class CardSystem : MonoSingleton<CardSystem>
         if (cards.Count != 0)
             Debug.LogError(ToString() + "Card count error");
 
-        GameManager.Instance.OnCardTurnStartEvent += ShowCard;
+        GameManager.Instance.OnCardTurnStartEvent += OnCardTurnStart;
+        GameManager.Instance.OnCardTurnEndEvent += OnCardTurnEnd;
     }
 
     // Update is called once per frame
@@ -52,12 +53,12 @@ public class CardSystem : MonoSingleton<CardSystem>
         
     }
 
-    public void ShowCard()
+    void GetANewCard()
     {
         var c = cardQueue.Dequeue();
-        OnShowCardEvent?.Invoke(c);
         currentCard = c;
     }
+
 
     public bool CanUseCard(Vector3Int index)
     {
@@ -77,8 +78,56 @@ public class CardSystem : MonoSingleton<CardSystem>
 
     public int CountRemainedCard()
     {
-        
         return cardQueue.Count;
     }
-    
+
+    public void OnGameStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnTurnStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnCardTurnStart()
+    {
+        GetANewCard();
+        OnShowCardEvent?.Invoke(currentCard);
+    }
+
+    public void OnCardTurnEnd()
+    {
+    }
+
+    public void OnMoveTurnStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnMoveTurnEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnTurnEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnGameEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnCardWillbeUsedEvent()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnCardUsedEvent()
+    {
+        throw new NotImplementedException();
+    }
 }

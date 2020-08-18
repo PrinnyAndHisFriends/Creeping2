@@ -121,9 +121,9 @@ public class EntitySystem : MonoSingleton<EntitySystem>
 
             Attack(entity, targetIndex);
             AreaSystem.Instance.TriggerArea(targetIndex, ()=> {
-                GameManager.Instance.CurrentPlayer.CheckEntity();
                 Attack(entity, targetIndex);
                 AttackArea(entity, targetIndex);
+                GameManager.Instance.TriggerTurn2End();
             });
         }
     }

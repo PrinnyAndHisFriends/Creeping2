@@ -24,12 +24,12 @@ interface IGameEvent
     void OnTurnStart();
     void OnCardTurnStart();
     void OnCardTurnEnd();
-    void OnTriggerTurnStart();
-    void OnTriggerTurnEnd();
     void OnMoveTurnStart();
     void OnMoveTurnEnd();
     void OnTurnEnd();
     void OnGameEnd();
+    void OnCardWillbeUsedEvent();
+    void OnCardUsedEvent();
 }
 
 
@@ -45,23 +45,28 @@ public class GameManager : MonoSingleton<GameManager>, IGameLogic
     public event Action OnTurnStartEvent;
     public event Action OnCardTurnStartEvent;
     public event Action OnCardTurnEndEvent;
-    public event Action OnTriggerTurnStartEvent;
-    public event Action OnTriggerTurnEndEvent;
     public event Action OnMoveTurnStartEvent;
     public event Action OnMoveTurnEndEvent;
     public event Action OnTurnEndEvent;
     public event Action OnGameEndEvent;
 
+    public event Action OnCardWillbeUsedEvent;
+    public event Action OnCardUsedEvent;
+    
+
     private void Awake()
     {
-        OnGameStartEvent += () => Log("OnGameStart");
+        OnGameStartEvent += () => Log("OnGameStartEvent");
         OnTurnStartEvent += () => Log("OnTurnStartEvent");
         OnCardTurnStartEvent += () => Log("OnCardTurnStartEvent");
         OnCardTurnEndEvent += () => Log("OnCardTurnEndEvent");
         OnMoveTurnStartEvent += () => Log("OnMoveTurnStartEvent");
         OnMoveTurnEndEvent += () => Log("OnMoveTurnEndEvent");
         OnTurnEndEvent += () => Log("OnTurnEndEvent");
-        OnGameEndEvent += ()=> Log("OnGameEnd");
+        OnGameEndEvent += ()=> Log("OnGameEndEvent");
+
+        OnCardWillbeUsedEvent += () => Log("OnCardWillbeUsedEvent");
+        OnCardUsedEvent += () => Log("OnCardUsedEvent");
     }
 
     // Start is called before the first frame update
@@ -94,11 +99,19 @@ public class GameManager : MonoSingleton<GameManager>, IGameLogic
     public void WantToUseCard()
     {
         if (CurrentPlayer.CanUseCard())
+        {
+            OnCardWillbeUsedEvent?.Invoke();
             CurrentPlayer.TriggerArea();
+        }
+    }
+    public void TriggerTurn1End()
+    {
+        UseCard();
     }
 
     public void UseCard()
     {
+        OnCardUsedEvent?.Invoke();
         CurrentPlayer.UseCard();
         CardTurnEnd();
     }
@@ -106,6 +119,7 @@ public class GameManager : MonoSingleton<GameManager>, IGameLogic
     public void CardTurnEnd()
     {
         OnCardTurnEndEvent?.Invoke();
+        MoveTurnStart();
     }
 
     public void MoveTurnStart()
@@ -114,11 +128,16 @@ public class GameManager : MonoSingleton<GameManager>, IGameLogic
         CurrentPlayer.MoveTurnStart();
     }
 
+    public void TriggerTurn2End()
+    {
+        CurrentPlayer.CheckEntity();
+    }
 
     public void MoveTurnEnd()
     {
         OnMoveTurnEndEvent?.Invoke();
         CurrentPlayer.MoveTurnEnd();
+        TurnEnd();
     }
 
     public void TurnEnd()

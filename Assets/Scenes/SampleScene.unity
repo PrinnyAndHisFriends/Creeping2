@@ -623,6 +623,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: d28194b8f21ed0a41927fba803f8ff34,
         type: 3}
+    - target: {fileID: 6345899885557919146, guid: b1c9d0d0828a88441adca1a369b0436f,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6345899885557919149, guid: b1c9d0d0828a88441adca1a369b0436f,
         type: 3}
       propertyPath: m_AnchoredPosition.x

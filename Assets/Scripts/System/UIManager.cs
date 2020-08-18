@@ -55,4 +55,14 @@ public class UIManager : MonoSingleton<UIManager>, IGameEvent
         //show ui
         //to main
     }
+
+    public void OnCardWillbeUsedEvent()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnCardUsedEvent()
+    {
+        throw new NotImplementedException();
+    }
 }

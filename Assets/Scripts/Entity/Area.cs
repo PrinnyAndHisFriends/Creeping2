@@ -49,6 +49,7 @@ public class EmptyArea : Area
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
     }
 }
 
@@ -63,6 +64,7 @@ public class AntArea : Area
     protected override void OnTrigger(Vector3Int index)
     {
         EntitySystem.Instance.GenerateEntity(Setting.EntityType.Ant, index);
+        AreaSystem.Instance.OnTriggerAreaFinish();
     }
 }
 
@@ -143,6 +145,7 @@ public class GrassArea : Area
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
     }
 }
 
@@ -155,6 +158,7 @@ public class GapArea : Area
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
     }
 }
 

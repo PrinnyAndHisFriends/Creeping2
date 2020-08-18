@@ -52,7 +52,7 @@ public class Client : MonobehaviourExtension
 
     public void TriggerArea()
     {
-        AreaSystem.Instance.TriggerArea(index, GameManager.Instance.UseCard);
+        AreaSystem.Instance.TriggerArea(index, GameManager.Instance.TriggerTurn1End);
     }
 
     public void UseCard()

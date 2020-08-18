@@ -7,18 +7,25 @@ interface ICommand
     void Execute();
 
     void Cancel();
+
+    void Finish();
 }
 
-public class Command : ICommand
+public class EmptyCommand : ICommand
 {
     public void Cancel()
     {
-        throw new System.NotImplementedException();
+        Finish();
     }
 
     public void Execute()
     {
-        throw new System.NotImplementedException();
+        Finish();
+    }
+
+    public void Finish()
+    {
+        GameManager.Instance.UseCard();
     }
 }
 
@@ -30,6 +37,29 @@ public class CompositeCommand : ICommand
     }
 
     public void Execute()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Finish()
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+public class RotateCommand : ICommand
+{
+    public void Cancel()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Execute()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void Finish()
     {
         throw new System.NotImplementedException();
     }
