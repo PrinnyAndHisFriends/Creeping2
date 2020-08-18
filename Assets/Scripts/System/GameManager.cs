@@ -9,14 +9,29 @@ interface IGameLogic
     void TurnStart();
     void CardTurnStart();
     void WantToUseCard();
-    void UseCard();
     void CardTurnEnd();
+    void UseCard();
     void MoveTurnStart();
     void MoveTurnEnd();
     void TurnEnd();
     void ChangeTurn();
     void GameEnd();
 }
+
+interface IGameEvent
+{
+    void OnGameStart();
+    void OnTurnStart();
+    void OnCardTurnStart();
+    void OnCardTurnEnd();
+    void OnTriggerTurnStart();
+    void OnTriggerTurnEnd();
+    void OnMoveTurnStart();
+    void OnMoveTurnEnd();
+    void OnTurnEnd();
+    void OnGameEnd();
+}
+
 
 public class GameManager : MonoSingleton<GameManager>, IGameLogic
 {
@@ -30,6 +45,8 @@ public class GameManager : MonoSingleton<GameManager>, IGameLogic
     public event Action OnTurnStartEvent;
     public event Action OnCardTurnStartEvent;
     public event Action OnCardTurnEndEvent;
+    public event Action OnTriggerTurnStartEvent;
+    public event Action OnTriggerTurnEndEvent;
     public event Action OnMoveTurnStartEvent;
     public event Action OnMoveTurnEndEvent;
     public event Action OnTurnEndEvent;

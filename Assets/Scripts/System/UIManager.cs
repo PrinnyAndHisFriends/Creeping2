@@ -3,26 +3,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoSingleton<UIManager>
+public class UIManager : MonoSingleton<UIManager>, IGameEvent
 {
     // Start is called before the first frame update
     void Awake()
     {
-        GameManager.Instance.OnTurnStartEvent += OnTurnStart;
-        GameManager.Instance.OnTurnEndEvent += OnTurnEnd;
-        GameManager.Instance.OnGameStartEvent += OnGameStart;
-        GameManager.Instance.OnGameEndEvent += OnGameEnd;
     }
 
+    public void OnGameStart()
+    {
+    }
 
-    void OnTurnStart()
+    public void OnTurnStart()
     {
         if (GameManager.Instance.IsPlayer(PlayerType.PlayerOne))
             ;//highlight
         else
             ;//highlight
     }
-    void OnTurnEnd()
+
+    public void OnCardTurnStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnCardTurnEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnMoveTurnStart()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnMoveTurnEnd()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnTurnEnd()
     {
         if (GameManager.Instance.IsPlayer(PlayerType.PlayerOne))
             ;//cancel highlight
@@ -30,12 +50,7 @@ public class UIManager : MonoSingleton<UIManager>
             ;//highlight
     }
 
-    void OnGameStart()
-    {
-
-    }
-
-    void OnGameEnd()
+    public void OnGameEnd()
     {
         //show ui
         //to main

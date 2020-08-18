@@ -13,6 +13,7 @@ public class UICard : MonoBehaviour
         dh = gameObject.AddComponent<UIDragHandler>();
         dh.OnDragStart += OnDragStart;
         dh.OnDragEnd += OnDragEnd;
+        UIManager.Instance.on
         CardSystem.Instance.OnShowCardEvent += ShowCard;
     }
     // Start is called before the first frame update
