@@ -94,7 +94,7 @@ public class Way1_2Card : Card
 
     public override Area ToArea()
     {
-        return new Way1_2Area(GetTile());
+        return new Way1_2Area(GetTile(), i);
     }
 }
 
@@ -131,7 +131,7 @@ public class Way1_3Card : Card
 
     public override Area ToArea()
     {
-        return new Way1_3Area(GetTile());
+        return new Way1_3Area(GetTile(), i);
     }
 }
 
@@ -168,7 +168,7 @@ public class Way1_4Card : Card
 
     public override Area ToArea()
     {
-        return new Way1_4Area(GetTile());
+        return new Way1_4Area(GetTile(), i);
     }
 }
 
@@ -205,7 +205,7 @@ public class Way1_2_4Card : Card
 
     public override Area ToArea()
     {
-        return new Way1_2_4Area(GetTile());
+        return new Way1_2_4Area(GetTile(), i);
     }
 }
 
@@ -243,7 +243,7 @@ public class Way1_3_4Card : Card
 
     public override Area ToArea()
     {
-        return new Way1_3_4Area(GetTile());
+        return new Way1_3_4Area(GetTile(), i);
     }
 }
 
@@ -273,7 +273,7 @@ public class Way1_3_5Card : Card
 
     public override Area ToArea()
     {
-        return new Way1_3_5Area(GetTile());
+        return new Way1_3_5Area(GetTile(), i);
     }
 }
 
@@ -305,7 +305,7 @@ public class Way1_3_4_6Card : Card
 
     public override Area ToArea()
     {
-        return new Way1_3_4_6Area(GetTile());
+        return new Way1_3_4_6Area(GetTile(), i);
     }
 }
 

@@ -8,11 +8,17 @@ using UnityEngine.Tilemaps;
 public class AreaSystem : MonoSingleton<AreaSystem>
 {
     public Tilemap tilemap;
+    public GameObject lightPrefab;
+    public GameObject highlightPrefab;
     Vector3Int index;
     public Vector3 mousePosInWorld;
 
     List<Area> areaList = new List<Area>();
     Dictionary<Vector3Int, Area> areas = new Dictionary<Vector3Int, Area>();
+    Dictionary<Vector3Int, GameObject> lights = new Dictionary<Vector3Int, GameObject>();
+    Dictionary<Vector3Int, GameObject> highlights = new Dictionary<Vector3Int, GameObject>();
+    IAreaModeStrategy originalMode = new NormalMode();
+    IAreaModeStrategy areaMode = new NormalMode();
 
 
     // Start is called before the first frame update
@@ -35,34 +41,36 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         {
             for (int j = Setting.MIN_AREA; j <= Setting.MAX_AREA; j++)
             {
-                Vector3Int key = new Vector3Int(i ,j ,0);
-                if (key == Setting.houseStartIndex)
-                {
-                    areas[key] = new HouseArea();
-                    areas[key].Trigger(key);
-                    areas[key].ShowForward(tilemap, key);
-                    continue;
-                }
-                else if (key == Setting.girlStartIndex)
-                {
-                    areas[key] = new Way1_2_3_4_5_6Area(TileManager.Instance.way1_2_3_4_5_6);
-                    areas[key].ShowForward(tilemap, key);
-                    continue;
-                }
-                else if (key == Setting.antStartIndex)
-                {
-                    areas[key] = new GrassArea();
-                    areas[key].ShowForward(tilemap, key);
-                    continue;
-                }
-
-
+                Vector3Int key = new Vector3Int(i, j, 0);
                 if (tilemap.HasTile(key))
                 {
+                    if (key == Setting.houseStartIndex)
+                    {
+                        areas[key] = new HouseArea();
+                        areas[key].Trigger(key);
+                        areas[key].ShowForward(tilemap, key);
+                        continue;
+                    }
+                    else if (key == Setting.girlStartIndex)
+                    {
+                        areas[key] = new Way1_2_3_4_5_6Area(TileManager.Instance.way1_2_3_4_5_6);
+                        areas[key].ShowForward(tilemap, key);
+                        continue;
+                    }
+                    else if (key == Setting.antStartIndex)
+                    {
+                        areas[key] = new GrassArea();
+                        areas[key].ShowForward(tilemap, key);
+                        continue;
+                    }
+
                     int id = UnityEngine.Random.Range(0, areaList.Count);
                     var data = areaList[id];
                     areaList.RemoveAt(id);
                     areas[key] = data;
+
+                    lights[index] = Instantiate(lightPrefab, GetWorldPosition(index), Quaternion.identity, transform);
+                    highlights[index] = Instantiate(highlightPrefab, GetWorldPosition(index), Quaternion.identity, transform);
                 }
             }
         }
@@ -71,30 +79,51 @@ public class AreaSystem : MonoSingleton<AreaSystem>
             Debug.LogError(ToString() + "Area count error" + areaList.Count);
     }
 
+    Vector3Int lastHighlightIndex;
     // Update is called once per frame
     void Update()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         mousePosInWorld = ray.GetPoint(-ray.origin.z / ray.direction.z);
         index = tilemap.WorldToCell(mousePosInWorld);
+
+        UnHighlight(lastHighlightIndex);
+        areaMode.Highlight(index);
+    }
+
+    public void SetMode(IAreaModeStrategy mode)
+    {
+        areaMode = mode;
+    }
+
+    public void Highlight(Vector3Int index)
+    {
         if (tilemap.HasTile(index))
         {
-            //Log("Highlight");
-            //Log(index.ToString());
+            highlights[index].SetActive(true);
+            lastHighlightIndex = index;
         }
     }
 
-    public void ToRotateMode()
+    public void UnHighlight(Vector3Int index)
     {
-        State = InnerState.Rotate;
-    }
-
-    public void ClickTile()
-    {
-        if ()
         if (tilemap.HasTile(index))
         {
-            Log("ClickTile");
+            highlights[index].SetActive(false);
+        }
+    }
+    public void Light(Vector3Int index)
+    {
+        if (tilemap.HasTile(index))
+        {
+            lights[index].SetActive(true);
+        }
+    }
+    public void Unlight(Vector3Int index)
+    {
+        if (tilemap.HasTile(index))
+        {
+            lights[index].SetActive(false);
         }
     }
 
@@ -118,11 +147,14 @@ public class AreaSystem : MonoSingleton<AreaSystem>
             var old = areas[index];
             old.ShowForward(tilemap, index);
             old.Trigger(index);
+            areaMode.Start();
             OnFinishEvent = OnFinish;
         }
     }
     public void OnTriggerAreaFinish()
     {
+        areaMode.End();
+        areaMode = originalMode;
         OnFinishEvent?.Invoke();
     }
 
@@ -141,17 +173,31 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         if (tilemap.HasTile(index))
         {
             Log("SetArea");
-            Area fin = CheckRemainedArea(areas[index], area);
-            areas[index] = fin;
-            fin.ShowForward(tilemap, index);
+            areas[index] = area;
+            area.ShowForward(tilemap, index);
+        }
+    }
+    public void ClickArea()
+    {
+        if (tilemap.HasTile(index))
+        {
+            areaMode.OnAreaClick(index);
+            Log("ClickTile");
         }
     }
 
-    Area CheckRemainedArea(Area ori, Area set)
-    {
-        return null;
-    }
     #endregion
+
+    public void ForeachArea(Func<Vector3Int, bool> func, Action<Vector3Int> action)
+    {
+        foreach (var data in areas)
+        {
+            if (func(data.Key))
+            {
+                action(data.Key);
+            }
+        }
+    }
 
     public bool CanMove(Vector3Int index1, Vector3Int index2)
     {
@@ -180,20 +226,105 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     }
 }
 
-interface IAreaModeStrategy
+public interface IAreaModeStrategy
 {
+    void Highlight(Vector3Int index);
     void OnAreaClick(Vector3Int index);
+    void Start();
+    void End();
 }
 
 public class NormalMode : IAreaModeStrategy
 {
+    public void End()
+    {
+    }
 
+    public void Highlight(Vector3Int index)
+    {
+        AreaSystem.Instance.Highlight(index);
+    }
+
+    public void OnAreaClick(Vector3Int index)
+    {
+        //throw new NotImplementedException();
+    }
+
+    public void Start()
+    {
+    }
 }
 public class RotateMode : IAreaModeStrategy
 {
+    public void End()
+    {
+        AreaSystem.Instance.ForeachArea( a=> false, AreaSystem.Instance.Unlight);
+    }
 
+    public void Highlight(Vector3Int index)
+    {
+        AreaSystem.Instance.Highlight(index);
+    }
+
+    public void OnAreaClick(Vector3Int index)
+    {
+        if (CanSelect(index))
+        {
+            var way = AreaSystem.Instance.GetArea(index) as IWayArea;
+            way.Rotate();
+            AreaSystem.Instance.SetArea(index, way as Area);
+        }
+    }
+
+    public void Start()
+    {
+        AreaSystem.Instance.ForeachArea(CanSelect, AreaSystem.Instance.Light);
+    }
+    public bool CanSelect(Vector3Int index)
+    {
+        var current = AreaSystem.Instance.GetArea(index);
+        return current.IsShowed && current is IWayArea && !EntitySystem.Instance.HasEntity(index);
+    }
 }
 public class ExchangeMode : IAreaModeStrategy
 {
+    Vector3Int first;
+    bool isFirst = true;
+    public void End()
+    {
+        AreaSystem.Instance.ForeachArea(a => false, AreaSystem.Instance.Unlight);
+    }
 
+    public void Highlight(Vector3Int index)
+    {
+        AreaSystem.Instance.Highlight(index);
+    }
+
+    public void OnAreaClick(Vector3Int index)
+    {
+        if (!CanSelect(index))
+            return;
+        if (isFirst)
+        {
+            first = index;
+        }
+        else
+        {
+            var secondArea = AreaSystem.Instance.GetArea(index);
+            var firstArea = AreaSystem.Instance.GetArea(first);
+            AreaSystem.Instance.SetArea(first, secondArea);
+            AreaSystem.Instance.SetArea(index, firstArea);
+        }
+    }
+
+    public void Start()
+    {
+        AreaSystem.Instance.ForeachArea(CanSelect, AreaSystem.Instance.Light);
+    }
+
+    public bool CanSelect(Vector3Int index)
+    {
+        var current = AreaSystem.Instance.GetArea(index);
+        return current.IsShowed && !(current is HouseArea) && !EntitySystem.Instance.HasEntity(index);
+    }
 }

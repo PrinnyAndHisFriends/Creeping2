@@ -22,6 +22,10 @@ public abstract class Area
             isTriggerred = true;
             OnTrigger(index);
         }
+        else
+        {
+            AreaSystem.Instance.OnTriggerAreaFinish();
+        }
     }
 
     public virtual void ShowForward(Tilemap map, Vector3Int index)
@@ -70,6 +74,7 @@ public class AntArea : Area
 
 public class RotateArea : Area
 {
+    IAreaModeStrategy mode = new RotateMode();
     public RotateArea() : base(TileManager.Instance.rotate) { }
 
     public override void Clear()
@@ -78,11 +83,13 @@ public class RotateArea : Area
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.SetMode(mode);
     }
 }
 
 public class ExchangeArea : Area
 {
+    IAreaModeStrategy mode = new ExchangeMode();
     public ExchangeArea() : base(TileManager.Instance.exchange) { }
 
     public override void Clear()
@@ -91,6 +98,7 @@ public class ExchangeArea : Area
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.SetMode(mode);
     }
 }
 
@@ -118,6 +126,7 @@ public class HouseArea : Area
     protected override void OnTrigger(Vector3Int index)
     {
         EntitySystem.Instance.GenerateEntity(Setting.EntityType.House, index);
+        //AreaSystem.Instance.OnTriggerAreaFinish();
     }
 }
 
@@ -132,6 +141,7 @@ public class EpresentArea : Area
     protected override void OnTrigger(Vector3Int index)
     {
         EntitySystem.Instance.GenerateEntity(Setting.EntityType.EPresent, index);
+        AreaSystem.Instance.OnTriggerAreaFinish();
     }
 }
 
@@ -164,91 +174,281 @@ public class GapArea : Area
 
 interface IWayArea
 {
-
+    void Rotate();
 }
 
 public class Way1_2Area : Area, IWayArea
 {
-    public Way1_2Area(Tile tile) : base(tile) { }
+    int i;
+    public Way1_2Area(Tile tile, int i) : base(tile) { this.i = i; }
     public override void Clear()
     {
     }
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
+    }
+    public void Rotate()
+    {
+        i++;
+        i %= 6;
+        switch (i)
+        {
+            case 0:
+                tile = TileManager.Instance.way1_2_a;
+                break;
+            case 1:
+                tile = TileManager.Instance.way1_2_b;
+                break;
+            case 2:
+                tile = TileManager.Instance.way1_2_c;
+                break;
+            case 3:
+                tile = TileManager.Instance.way1_2_d;
+                break;
+            case 4:
+                tile = TileManager.Instance.way1_2_e;
+                break;
+            case 5:
+                tile = TileManager.Instance.way1_2_f;
+                break;
+            default:
+                break;
+        }
     }
 }
 
 public class Way1_3Area : Area, IWayArea
 {
-    public Way1_3Area(Tile tile) : base(tile) { }
+    int i;
+    public Way1_3Area(Tile tile, int i) : base(tile) { this.i = i; }
     public override void Clear()
     {
     }
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
+    }
+
+
+    public void Rotate()
+    {
+        i++;
+        i %= 6;
+        switch (i)
+        {
+            case 0:
+                tile = TileManager.Instance.way1_3_a;
+                break;
+            case 1:
+                tile = TileManager.Instance.way1_3_b;
+                break;
+            case 2:
+                tile = TileManager.Instance.way1_3_c;
+                break;
+            case 3:
+                tile = TileManager.Instance.way1_3_d;
+                break;
+            case 4:
+                tile = TileManager.Instance.way1_3_e;
+                break;
+            case 5:
+                tile = TileManager.Instance.way1_3_f;
+                break;
+            default:
+                break;
+        }
     }
 }
 
 public class Way1_4Area : Area, IWayArea
 {
-    public Way1_4Area(Tile tile) : base(tile) { }
+    int i;
+    public Way1_4Area(Tile tile, int i) : base(tile) { this.i = i; }
     public override void Clear()
     {
     }
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
+    }
+    public void Rotate()
+    {
+        i++;
+        i %= 6;
+        switch (i)
+        {
+            case 0:
+                tile = TileManager.Instance.way1_4_a;
+                break;
+            case 1:
+                tile = TileManager.Instance.way1_4_b;
+                break;
+            case 2:
+                tile = TileManager.Instance.way1_4_c;
+                break;
+            case 3:
+                tile = TileManager.Instance.way1_4_d;
+                break;
+            case 4:
+                tile = TileManager.Instance.way1_4_e;
+                break;
+            case 5:
+                tile = TileManager.Instance.way1_4_f;
+                break;
+            default:
+                break;
+        }
     }
 }
 
 public class Way1_2_4Area : Area, IWayArea
 {
-    public Way1_2_4Area(Tile tile) : base(tile) { }
+    int i;
+    public Way1_2_4Area(Tile tile, int i) : base(tile) { this.i = i; }
     public override void Clear()
     {
     }
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
+    }
+    public void Rotate()
+    {
+        i++;
+        i %= 6;
+        switch (i)
+        {
+            case 0:
+                tile = TileManager.Instance.way1_2_4_a;
+                break;
+            case 1:
+                tile = TileManager.Instance.way1_2_4_b;
+                break;
+            case 2:
+                tile = TileManager.Instance.way1_2_4_c;
+                break;
+            case 3:
+                tile = TileManager.Instance.way1_2_4_d;
+                break;
+            case 4:
+                tile = TileManager.Instance.way1_2_4_e;
+                break;
+            case 5:
+                tile = TileManager.Instance.way1_2_4_f;
+                break;
+            default:
+                break;
+        }
     }
 }
 
 public class Way1_3_4Area : Area, IWayArea
 {
-    public Way1_3_4Area(Tile tile) : base(tile) { }
+    int i;
+    public Way1_3_4Area(Tile tile, int i) : base(tile) { this.i = i; }
     public override void Clear()
     {
     }
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
     }
-
+    public void Rotate()
+    {
+        i++;
+        i %= 6;
+        switch (i)
+        {
+            case 0:
+                tile = TileManager.Instance.way1_3_4_a;
+                break;
+            case 1:
+                tile = TileManager.Instance.way1_3_4_b;
+                break;
+            case 2:
+                tile = TileManager.Instance.way1_3_4_c;
+                break;
+            case 3:
+                tile = TileManager.Instance.way1_3_4_d;
+                break;
+            case 4:
+                tile = TileManager.Instance.way1_3_4_e;
+                break;
+            case 5:
+                tile = TileManager.Instance.way1_3_4_f;
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 public class Way1_3_5Area : Area, IWayArea
 {
-    public Way1_3_5Area(Tile tile) : base(tile) { }
+    int i;
+    public Way1_3_5Area(Tile tile, int i) : base(tile) { this.i = i; }
     public override void Clear()
     {
     }
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
+    }
+    public void Rotate()
+    {
+        i++;
+        i %= 2;
+        switch (i)
+        {
+            case 0:
+                tile = TileManager.Instance.way1_3_5_a;
+                break;
+            case 1:
+                tile = TileManager.Instance.way1_3_5_b;
+                break;
+            default:
+                break;
+        }
     }
 }
 
 public class Way1_3_4_6Area : Area, IWayArea
 {
-    public Way1_3_4_6Area(Tile tile) : base(tile) { }
+    int i;
+    public Way1_3_4_6Area(Tile tile, int i) : base(tile) { this.i = i; }
     public override void Clear()
     {
     }
 
     protected override void OnTrigger(Vector3Int index)
     {
+        AreaSystem.Instance.OnTriggerAreaFinish();
+    }
+    public void Rotate()
+    {
+        i++;
+        i %= 3;
+        switch (i)
+        {
+            case 0:
+                tile = TileManager.Instance.way1_3_4_6_a;
+                break;
+            case 1:
+                tile = TileManager.Instance.way1_3_4_6_b;
+                break;
+            case 2:
+                tile = TileManager.Instance.way1_3_4_6_c;
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -260,6 +460,10 @@ public class Way1_2_3_4_5_6Area : Area, IWayArea
     }
 
     protected override void OnTrigger(Vector3Int index)
+    {
+        AreaSystem.Instance.OnTriggerAreaFinish();
+    }
+    public void Rotate()
     {
     }
 }

@@ -59,6 +59,8 @@ public class Client : MonobehaviourExtension
     {
         if (CardSystem.Instance.CanSetCard(index))
             AreaSystem.Instance.SetArea(index, CardSystem.Instance.currentCard.ToArea());
+        else
+            ;//set fail
     }
 
     public void MoveTurnStart()

@@ -523,6 +523,18 @@ PrefabInstance:
       propertyPath: tilemap
       value: 
       objectReference: {fileID: 2145112900}
+    - target: {fileID: 1015896004255726749, guid: e3763f1b0f2007b4db83177cb2d91fe3,
+        type: 3}
+      propertyPath: lightPrefab
+      value: 
+      objectReference: {fileID: 1757065887506427510, guid: 252e9ea960bcdee48aebef9fe130c387,
+        type: 3}
+    - target: {fileID: 1015896004255726749, guid: e3763f1b0f2007b4db83177cb2d91fe3,
+        type: 3}
+      propertyPath: highlightPrefab
+      value: 
+      objectReference: {fileID: 3012830438693406016, guid: fed8c946e1a9ded4585f6fc8003f31dc,
+        type: 3}
     - target: {fileID: 1015896004255726750, guid: e3763f1b0f2007b4db83177cb2d91fe3,
         type: 3}
       propertyPath: epresent
