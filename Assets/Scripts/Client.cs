@@ -36,7 +36,7 @@ public class Client : MonobehaviourExtension
         if (playerType == PlayerType.PlayerOne)
         {
             EntitySystem.Instance.GenerateEntity(Setting.EntityType.Girl, Setting.girlStartIndex);
-            EntitySystem.Instance.GenerateEntity(Setting.EntityType.House, Setting.houseStartIndex);
+            //EntitySystem.Instance.GenerateEntity(Setting.EntityType.House, Setting.houseStartIndex);
         }
         else
         {
@@ -75,7 +75,7 @@ public class Client : MonobehaviourExtension
 
     public void TurnEnd()
     {
-        throw new System.NotImplementedException();
+        //throw new System.NotImplementedException();
     }
 
     public void ChangeTurn()

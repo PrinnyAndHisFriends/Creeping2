@@ -74,7 +74,6 @@ public class AntArea : Area
 
 public class RotateArea : Area
 {
-    IAreaModeStrategy mode = new RotateMode();
     public RotateArea() : base(TileManager.Instance.rotate) { }
 
     public override void Clear()
@@ -83,13 +82,12 @@ public class RotateArea : Area
 
     protected override void OnTrigger(Vector3Int index)
     {
-        AreaSystem.Instance.SetMode(mode);
+        AreaSystem.Instance.SetMode(new RotateMode());
     }
 }
 
 public class ExchangeArea : Area
 {
-    IAreaModeStrategy mode = new ExchangeMode();
     public ExchangeArea() : base(TileManager.Instance.exchange) { }
 
     public override void Clear()
@@ -98,7 +96,7 @@ public class ExchangeArea : Area
 
     protected override void OnTrigger(Vector3Int index)
     {
-        AreaSystem.Instance.SetMode(mode);
+        AreaSystem.Instance.SetMode(new ExchangeMode());
     }
 }
 

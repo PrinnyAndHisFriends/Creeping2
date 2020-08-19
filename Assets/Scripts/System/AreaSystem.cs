@@ -10,7 +10,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     public Tilemap tilemap;
     public GameObject lightPrefab;
     public GameObject highlightPrefab;
-    Vector3Int index;
+    Vector3Int pointedIndex;
     public Vector3 mousePosInWorld;
 
     List<Area> areaList = new List<Area>();
@@ -31,7 +31,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
         for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Exchange]; i++)
             areaList.Add(new ExchangeArea());
         for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.EPresent]; i++)
-            areaList.Add(new PresentArea());
+            areaList.Add(new EpresentArea());
         for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Gap]; i++)
             areaList.Add(new GapArea());
         for (int i = 0; i < Setting.areaDeckCount[Setting.AreaType.Grass]; i++)
@@ -44,6 +44,11 @@ public class AreaSystem : MonoSingleton<AreaSystem>
                 Vector3Int key = new Vector3Int(i, j, 0);
                 if (tilemap.HasTile(key))
                 {
+                    lights[key] = Instantiate(lightPrefab, GetWorldPosition(key), Quaternion.identity, transform);
+                    highlights[key] = Instantiate(highlightPrefab, GetWorldPosition(key), Quaternion.identity, transform);
+                    lights[key].SetActive(false);
+                    highlights[key].SetActive(false);
+
                     if (key == Setting.houseStartIndex)
                     {
                         areas[key] = new HouseArea();
@@ -68,10 +73,7 @@ public class AreaSystem : MonoSingleton<AreaSystem>
                     var data = areaList[id];
                     areaList.RemoveAt(id);
                     areas[key] = data;
-
-                    lights[index] = Instantiate(lightPrefab, GetWorldPosition(index), Quaternion.identity, transform);
-                    highlights[index] = Instantiate(highlightPrefab, GetWorldPosition(index), Quaternion.identity, transform);
-                }
+ }
             }
         }
 
@@ -85,10 +87,15 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         mousePosInWorld = ray.GetPoint(-ray.origin.z / ray.direction.z);
-        index = tilemap.WorldToCell(mousePosInWorld);
+        pointedIndex = tilemap.WorldToCell(mousePosInWorld);
 
         UnHighlight(lastHighlightIndex);
-        areaMode.Highlight(index);
+        areaMode.Highlight(pointedIndex);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            ClickArea();
+        }
     }
 
     public void SetMode(IAreaModeStrategy mode)
@@ -143,16 +150,19 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     {
         if (tilemap.HasTile(index))
         {
-            Log("TriggerArea");
+            OnFinishEvent = OnFinish;
             var old = areas[index];
+            Log("TriggerArea: " + old.GetType().ToString());
             old.ShowForward(tilemap, index);
             old.Trigger(index);
+            //BUG: normal mode 下 end 比 start 快
+            Log(areaMode.GetType().ToString() + " Start");
             areaMode.Start();
-            OnFinishEvent = OnFinish;
         }
     }
     public void OnTriggerAreaFinish()
     {
+        Log(areaMode.GetType().ToString() + " End");
         areaMode.End();
         areaMode = originalMode;
         OnFinishEvent?.Invoke();
@@ -179,9 +189,9 @@ public class AreaSystem : MonoSingleton<AreaSystem>
     }
     public void ClickArea()
     {
-        if (tilemap.HasTile(index))
+        if (tilemap.HasTile(pointedIndex))
         {
-            areaMode.OnAreaClick(index);
+            areaMode.OnAreaClick(pointedIndex);
             Log("ClickTile");
         }
     }
@@ -206,9 +216,9 @@ public class AreaSystem : MonoSingleton<AreaSystem>
 
     public bool GetMouseIndex(out Vector3Int outIndex)
     {
-        if (tilemap.HasTile(index))
+        if (tilemap.HasTile(pointedIndex))
         {
-            outIndex = index;
+            outIndex = pointedIndex;
             return true;
         }
         outIndex = Vector3Int.zero;
@@ -273,6 +283,7 @@ public class RotateMode : IAreaModeStrategy
             var way = AreaSystem.Instance.GetArea(index) as IWayArea;
             way.Rotate();
             AreaSystem.Instance.SetArea(index, way as Area);
+            AreaSystem.Instance.OnTriggerAreaFinish();
         }
     }
 
@@ -283,7 +294,7 @@ public class RotateMode : IAreaModeStrategy
     public bool CanSelect(Vector3Int index)
     {
         var current = AreaSystem.Instance.GetArea(index);
-        return current.IsShowed && current is IWayArea && !EntitySystem.Instance.HasEntity(index);
+        return current.IsShowed/* && current is IWayArea && !EntitySystem.Instance.HasEntity(index)*/;
     }
 }
 public class ExchangeMode : IAreaModeStrategy
@@ -307,6 +318,7 @@ public class ExchangeMode : IAreaModeStrategy
         if (isFirst)
         {
             first = index;
+            isFirst = false;
         }
         else
         {
@@ -314,6 +326,7 @@ public class ExchangeMode : IAreaModeStrategy
             var firstArea = AreaSystem.Instance.GetArea(first);
             AreaSystem.Instance.SetArea(first, secondArea);
             AreaSystem.Instance.SetArea(index, firstArea);
+            AreaSystem.Instance.OnTriggerAreaFinish();
         }
     }
 
@@ -325,6 +338,6 @@ public class ExchangeMode : IAreaModeStrategy
     public bool CanSelect(Vector3Int index)
     {
         var current = AreaSystem.Instance.GetArea(index);
-        return current.IsShowed && !(current is HouseArea) && !EntitySystem.Instance.HasEntity(index);
+        return current.IsShowed /*&& !(current is HouseArea)*//* && !EntitySystem.Instance.HasEntity(index)*/;
     }
 }

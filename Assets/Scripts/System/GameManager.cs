@@ -35,7 +35,7 @@ interface IGameEvent
 
 public class GameManager : MonoSingleton<GameManager>, IGameLogic
 {
-    public PlayerType CurrentTurn { get; set;}
+    public PlayerType CurrentTurn { get; set; } = PlayerType.PlayerOne;
 
     public Client CurrentPlayer { get => PlayerOne.playerType == CurrentTurn ? PlayerOne : PlayerTwo; }
     public Client PlayerOne;
@@ -106,6 +106,7 @@ public class GameManager : MonoSingleton<GameManager>, IGameLogic
     }
     public void TriggerTurn1End()
     {
+        Log("TriggerTurn1End");
         UseCard();
     }
 
