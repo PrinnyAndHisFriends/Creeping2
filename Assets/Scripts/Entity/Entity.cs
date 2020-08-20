@@ -48,6 +48,7 @@ public abstract class Entity : MonobehaviourExtension
         this.player = player;
         this.index = index;
         SetPosition(AreaSystem.Instance.GetWorldPosition(index));
+        IsFinishMove = true;
     }
 
     public bool CanMove(Vector3Int targetIndex)
