@@ -78,7 +78,6 @@ public abstract class Entity : MonobehaviourExtension
 
     public virtual void MoveTurnEnd()
     {
-        IsFinishMove = false;
     }
 
     public virtual bool CanMoveToArea(Area area)
